@@ -1,2 +1,2 @@
-# event-space-web
+# Event Space Web
 The front end program for Event Space.
