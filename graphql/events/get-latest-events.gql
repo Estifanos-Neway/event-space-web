@@ -1,0 +1,5 @@
+query LatestEvents {
+  events {
+    title
+  }
+}
