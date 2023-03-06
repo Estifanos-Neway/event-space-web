@@ -19,5 +19,5 @@ export default defineNuxtConfig({
     vite: {
         ssr: true,
         build: true
-    }
+    },
 })
