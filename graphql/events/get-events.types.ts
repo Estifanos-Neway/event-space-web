@@ -1,4 +1,4 @@
-import { Event } from "./event.type"
+import { EventPreview } from "./event-preview.type"
 
 export type GetEventsVars = {
     offset?: number
@@ -20,21 +20,21 @@ export type GetEventsVars = {
 }
 
 export type GetEventsRes = {
-    events: Array<Event>
+    events: Array<EventPreview>
 }
 
 export type GetEventsByLocationRes = {
-    eventsByLocation: Array<Event>
+    eventsByLocation: Array<EventPreview>
 }
 export type GetMyEventsRes = {
     me: {
-        events: Array<Event>
+        events: Array<EventPreview>
     }
 }
 export type GetSavedEventsRes = {
     me: {
         bookmarks: Array<{
-            event: Event
+            event: EventPreview
         }>
     }
 }

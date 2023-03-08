@@ -25,12 +25,12 @@
                         <ThemeToggle />
                     </div>
                 </div>
-                <div class="h-[95vh]">
+                <div>
                     <slot />
                 </div>
             </div>
-            <div v-else class="grid grid-cols-6 h-screen">
-                <div class="col-span-1 border-r flex flex-col justify-between items-center py-8">
+            <div v-else class="grid grid-cols-6 max-h-screen">
+                <div class="col-span-1 border-r flex flex-col justify-between items-center py-8 h-screen">
                     <div class="flex flex-col items-center gap-3">
                         <Logo />
                         <ul>
@@ -55,7 +55,7 @@
                         Log Out
                     </div>
                 </div>
-                <div class=" col-span-5">
+                <div class="col-span-5 max-h-screen overflow-hidden">
                     <div class="flex justify-end px-10 py-7 border-b">
                         <ThemeToggle />
                     </div>

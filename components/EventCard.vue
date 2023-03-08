@@ -4,8 +4,16 @@
             {{ event.title }}
         </p>
         <p>
-            {{ event.description }}
+            {{ event.description.substring(0, descriptionPreviewLength) }}
+            {{ event.description.length > descriptionPreviewLength ? `...` : `` }}
         </p>
+        <br>
+        <ul>
+            <li>{{ event.city.name }}</li>
+            <li>{{ event.date }}</li>
+            <li>{{ event.price }}</li>
+            <li>{{ event.id }}</li>
+        </ul>
     </div>
 </template>
 
@@ -13,7 +21,7 @@
 import { EventPreview } from "@/graphql/events/event-preview.type"
 
 const router = useRouter()
-
+const descriptionPreviewLength: number = 124
 defineProps<{
     event: EventPreview
 }>()

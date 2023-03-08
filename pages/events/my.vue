@@ -1,7 +1,5 @@
 <template>
-    <div>
-        <EventListing v-if="userStore.isAuthorized" listKind="my" />
-    </div>
+    <EventListing v-if="userStore.isAuthorized" listKind="my" />
 </template>
 
 <script setup lang="ts">
