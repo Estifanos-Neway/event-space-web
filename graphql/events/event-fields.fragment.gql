@@ -1,0 +1,23 @@
+fragment eventFields on Events {
+  location
+  bookmarks_count
+  city {
+    name
+  }
+  date
+  description
+  id
+  images
+  price
+  specificAddress
+  tags
+  title
+  user {
+    avatarUrl
+    description
+    email
+    followers_count
+    id
+    name
+  }
+}

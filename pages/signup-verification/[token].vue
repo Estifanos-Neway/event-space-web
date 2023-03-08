@@ -10,20 +10,20 @@
 </template>
 
 <script setup lang="ts">
-import { SignupVerificationMutationVars, SignupVerificationMutationRes } from "~~/graphql/auth/signup-verification-mutation-types"
+import { SignupVerificationMutationVars, SignupVerificationMutationRes } from "~~/graphql/auth/signup-verification-mutation.types"
 import { signupVerificationMutation } from "@/graphql/auth"
 import { responses } from "@/graphql/commons"
 
 const route = useRoute()
 const router = useRouter()
-const { onLogin } = useApollo()
 
 let errorMessage = ""
 
 const { mutate, loading, error, onError, onDone } = useMutation<SignupVerificationMutationRes, SignupVerificationMutationVars>(
     signupVerificationMutation,
     {
-        "fetchPolicy": "no-cache"
+        clientId: "anonymous",
+        fetchPolicy: "no-cache"
     }
 )
 
@@ -36,17 +36,19 @@ onError(error => {
 
     } else {
         errorMessage = "system error"
-        console.log("signup verification onError", error)
+        console.error("signup verification onError", error)
     }
 })
 
 onDone(result => {
     if (result.data?.verifySignUp.message === responses.OK) {
-        onLogin(result.data.verifySignUp.userLogIn.accessToken)
+        const accessToken = result.data.verifySignUp.userLogIn?.accessToken
+        const refreshToken = result.data.verifySignUp.userLogIn?.refreshToken
+        useUserLogin(accessToken!, refreshToken!)
         router.replace("/")
     } else {
         errorMessage = "system error"
-        console.log("signup verification onDone", result)
+        console.error("signup verification onDone", result)
     }
 })
 onMounted(() => {

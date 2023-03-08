@@ -1,5 +1,7 @@
 export interface SignupMutationVars {
-  verificationToken: string
+  name: string
+  email: string
+  password: string
 }
 export interface SignupMutationRes {
   signUp: {

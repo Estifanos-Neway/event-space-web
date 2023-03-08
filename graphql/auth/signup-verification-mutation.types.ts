@@ -5,9 +5,9 @@ export interface SignupVerificationMutationVars {
 export interface SignupVerificationMutationRes {
   verifySignUp: {
     message: string
-    userLogIn: {
-      accessToken?: string
-      refreshToken?: string
+    userLogIn?: {
+      accessToken: string
+      refreshToken: string
     }
   }
 }

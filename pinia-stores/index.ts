@@ -1,1 +1,2 @@
-export {default as useGeneralStore } from "./general-store"
+export { useGeneralStore } from "./general-store"
+export { useUserStore } from "./user-store"

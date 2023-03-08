@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { SiteNotification } from "@/types/general"
-export default defineStore("generalStore", {
+export const useGeneralStore = defineStore("generalStore", {
     state: () => ({
         theme: {
             dark: false
@@ -63,6 +63,11 @@ export default defineStore("generalStore", {
                 message: ""
             }
         }
-    }
+    },
+    persist: {
+        storage: persistedState.cookiesWithOptions({
+            sameSite: 'strict',
+        }),
+    },
 }
 )

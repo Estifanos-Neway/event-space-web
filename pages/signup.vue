@@ -26,8 +26,7 @@
 import { Form, Field, ErrorMessage } from "vee-validate"
 import { string, object } from "yup"
 import { signupMutation } from "@/graphql/auth"
-import { SignupMutationRes } from "@/graphql/auth/signup-mutation-response"
-import { SignupInput } from "@/types/auth"
+import { SignupMutationRes, SignupMutationVars } from "@/graphql/auth/signup-mutation.types"
 import { useGeneralStore } from "@/pinia-stores";
 import { responses } from "@/graphql/commons"
 
@@ -39,17 +38,18 @@ const schema = object({
     password: string().required().min(6).label("Password"),
 })
 
-const { mutate, loading: isLoading, onError, onDone } = useMutation<SignupMutationRes>(
+const { mutate, loading: isLoading, onError, onDone } = useMutation<SignupMutationRes, SignupMutationVars>(
     signupMutation,
     {
-        "fetchPolicy": "no-cache"
+        clientId: "anonymous",
+        fetchPolicy: "no-cache"
     }
 )
 onError((error) => {
     if (error.message === responses.emailAlreadyExist) {
         generalStore.setErrorNotification("Email already exist, Please use another email or Sing in.")
     } else {
-        console.log("signup onError", error)
+        console.error("signup onError", error)
         generalStore.setSystemErrorNotification()
     }
 })
@@ -57,13 +57,13 @@ onDone((result) => {
     if (result.data?.signUp.message === responses.OK) {
         generalStore.setErrorNotification("SUCCESS! We have sent a verification link to your email!")
     } else {
-        console.log("signup onDone", result)
+        console.error("signup onDone", result)
         generalStore.setSystemErrorNotification()
     }
 })
 function onSubmit(values: any) {
     generalStore.clearNotification()
-    const variables: SignupInput = {
+    const variables: SignupMutationVars = {
         name: values.name,
         email: values.email,
         password: values.email

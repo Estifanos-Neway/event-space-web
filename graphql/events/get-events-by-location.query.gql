@@ -1,0 +1,22 @@
+#import "./event-preview-fields.fragment.gql"
+
+query getEventByLocation(
+  $lat: numeric!
+  $long: numeric!
+  $offset: Int
+  $limit: Int
+  $orderBy: [EventsOrderBy!]
+  $cityId: UuidComparisonExp
+  $date: TimestamptzComparisonExp
+  $price: NumericComparisonExp
+) {
+  eventsByLocation(
+    args: { lat: $lat, long: $long }
+    limit: $limit
+    offset: $offset
+    orderBy: $orderBy
+    where: { cityId: $cityId, date: $date, price: $price }
+  ) {
+    ...eventPreviewFields
+  }
+}

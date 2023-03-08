@@ -1,0 +1,58 @@
+<template>
+    <div @scroll="handleScroll" ref="scrollingList" class="h-full overflow-auto">
+        Events List
+        <div>
+            <div v-for="event in result?.eventsByLocation" class="mb-3" :key="event.id">
+                <EventCard :event="event" />
+            </div>
+        </div>
+        <div :class="{ invisible: !loading }">
+            loading...
+        </div>
+        <div v-if="error">
+            Error
+        </div>
+    </div>
+</template>
+
+<script setup lang="ts">
+const paginationLimit: number = 8
+const { loading, result, onError, error, fetchMore } = useEventsByLocation(0, paginationLimit)
+onError(error => {
+    console.error("useEventsByLocation onError", error)
+})
+
+// scroll pagination
+const scrollingList = ref<HTMLInputElement | null>(null)
+
+function loadMore() {
+    if (!loading.value) {
+        fetchMore({
+            variables: {
+                offset: result.value?.eventsByLocation.length,
+                limit: paginationLimit
+            },
+            updateQuery: (previousResult, { fetchMoreResult }) => {
+                if (!fetchMoreResult) return previousResult
+                return {
+                    ...previousResult,
+                    eventsByLocation: [
+                        ...previousResult.eventsByLocation,
+                        ...fetchMoreResult.eventsByLocation,
+                    ],
+                }
+            }
+        })
+    }
+}
+
+function handleScroll() {
+    const element = scrollingList.value
+    if (element) {
+        const scrollBottom = element.scrollHeight - element.clientHeight - element.scrollTop
+        if (scrollBottom <= 15) {
+            loadMore()
+        }
+    }
+}
+</script>

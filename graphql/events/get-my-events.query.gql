@@ -1,0 +1,21 @@
+#import "./event-preview-fields.fragment.gql"
+
+query getMyEvents(
+  $offset: Int
+  $limit: Int
+  $orderBy: [EventsOrderBy!]
+  $cityId: UuidComparisonExp
+  $date: TimestamptzComparisonExp
+  $price: NumericComparisonExp
+) {
+  me {
+    events(
+      offset: $offset
+      limit: $limit
+      orderBy: $orderBy
+      where: { cityId: $cityId, date: $date, price: $price }
+    ) {
+      ...eventPreviewFields
+    }
+  }
+}

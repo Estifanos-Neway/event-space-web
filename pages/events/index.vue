@@ -1,9 +1,8 @@
 <template>
     <div>
-        Events List
+        <EventListing listKind="all" />
     </div>
 </template>
 
 <script setup lang="ts">
-
 </script>

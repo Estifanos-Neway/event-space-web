@@ -1,0 +1,23 @@
+#import "./event-preview-fields.fragment.gql"
+
+query getSavedEvents(
+  $offset: Int
+  $limit: Int
+  $orderBy: EventsOrderBy
+  $cityId: UuidComparisonExp
+  $date: TimestamptzComparisonExp
+  $price: NumericComparisonExp
+) {
+  me {
+    bookmarks(
+      offset: $offset
+      limit: $limit
+      where: { event: { cityId: $cityId, date: $date, price: $price } }
+      orderBy: { event: $orderBy }
+    ) {
+      event {
+        ...eventPreviewFields
+      }
+    }
+  }
+}
