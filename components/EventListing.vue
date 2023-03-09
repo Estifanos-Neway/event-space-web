@@ -3,7 +3,7 @@
 
         <div class="flex gap-4">
             <div>
-                <div class="flex items-center mb-4">
+                <div class="flex items-center mb-4" v-if="props.listKind !== 'saved'">
                     <input id="sort-by-location-checkbox" type="checkbox" v-model="sortByLocation"
                         class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                     <label for="sort-by-location-checkbox"
@@ -75,7 +75,7 @@
 
             </div>
         </div>
-        <div class="relative">
+        <div class="relative" v-if="props.listKind !== 'saved'">
             <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor"
                     viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -148,24 +148,21 @@ watch(coords, () => {
 const sortByLocation = ref<boolean>(false)
 watch(sortByLocation, () => {
     if (sortByLocation.value) {
-        if(listKindQueue[listKindQueue.length - 1] === "location") return
         setQueries("location")
         sortBy.value = "none"
-    } else if (listKindQueue[listKindQueue.length - 1] === "location") {
-        setQueries()
+    } else {
+        setQueries(props.listKind)
     }
 })
 
 // search
 const searchText = ref("")
 watch(searchText, () => {
-    if (searchText.value.length > 2 && props.listKind !== "saved"){
-        if(listKindQueue[listKindQueue.length - 1] === "search") return
-        if (sortByLocation) sortByLocation.value = false
+    if (searchText.value.length > 2 && props.listKind !== "saved") {
         queryVars.search = searchText.value
         setQueries("search")
-    } else if (listKindQueue[listKindQueue.length - 1] === "search"){
-        setQueries()
+    } else {
+        setQueries(props.listKind)
     }
 })
 
@@ -235,16 +232,7 @@ watch(citySearchText, () => {
         searchedCities.value = getCitiesResult.value?.cities.map(city => city.name.toLowerCase().includes(citySearchText.value.toLocaleLowerCase()))
     }
 })
-const listKindQueue: Array<listKindType> = []
-function setQueries(listKind?: listKindType) {
-    console.log("1:", listKindQueue)
-    if (!listKind) {
-        if (listKindQueue.length <= 1) return
-        listKindQueue.pop()
-        listKind = listKindQueue[listKindQueue.length - 1]
-    } else {
-        listKindQueue.push(listKind!)
-    }
+function setQueries(listKind: listKindType) {
     switch (listKind) {
         case "all":
             queryDocument.value = getEventsQuery
@@ -328,8 +316,6 @@ function setQueries(listKind?: listKindType) {
             )
             break
     }
-    console.log("2:", listKindQueue)
-
 }
 setQueries(props.listKind)
 
