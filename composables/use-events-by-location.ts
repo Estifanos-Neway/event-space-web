@@ -11,9 +11,6 @@ export function useEventsByLocation(offset: number, limit: number) {
             long: coords.value.longitude,
             offset,
             limit,
-            cityId:{},
-            date:{},
-            price:{}
         },
         {
             fetchPolicy: "cache-and-network"

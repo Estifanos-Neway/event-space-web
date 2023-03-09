@@ -7,5 +7,6 @@ export function createEventsQueryVars(vars: GetEventsVars): GetEventsVars {
         cityId: vars.cityId ?? {},
         date: vars.date ?? {},
         price: vars.price ?? {},
+        userId: vars.userId ?? {}
     }
 }

@@ -17,6 +17,10 @@ export type GetEventsVars = {
     // get by location
     lat?: number
     long?: number
+
+    // both
+    userId?: { _eq: string } | {}
+    bookmarks?: { userId: { _eq: string } } | {}
 }
 
 export type GetEventsRes = {
@@ -25,6 +29,9 @@ export type GetEventsRes = {
 
 export type GetEventsByLocationRes = {
     eventsByLocation: Array<EventPreview>
+}
+export type SearchEventsRes = {
+    searchEvents: Array<EventPreview>
 }
 export type GetMyEventsRes = {
     me: {

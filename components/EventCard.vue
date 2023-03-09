@@ -14,6 +14,8 @@
             <li>{{ event.price }}</li>
             <li>{{ event.id }}</li>
         </ul>
+        <br>
+        
     </div>
 </template>
 
