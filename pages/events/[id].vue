@@ -1,14 +1,19 @@
 <template>
     <div class="h-full overflow-auto">
-        <div v-if="loading">
-            Loading...
+        <div v-if="result">
+            <div>
+                <Bookmark :isPreview="false" :event="result.eventsByPk" />
+                <Follow :event="result.eventsByPk" />
+            </div>
+            <pre>{{ result }}</pre>
         </div>
         <div v-else-if="error">
             Error getting event detail <span @click="refetchEvents">[Retry]</span>
         </div>
-        <pre v-else>
-            {{ result }}
-        </pre>
+        <div v-else="loading">
+            Loading...
+        </div>
+
     </div>
 </template>
 
@@ -21,6 +26,9 @@ const { result, loading, error, onError, refetch } = useQuery<GetEventQueryRes, 
     getEventQuery,
     {
         id: route.params.id as string
+    },
+    {
+        fetchPolicy:"network-only"
     }
 )
 onError(error => {

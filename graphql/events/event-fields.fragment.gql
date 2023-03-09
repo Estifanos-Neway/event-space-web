@@ -20,4 +20,6 @@ fragment eventFields on Events {
     id
     name
   }
+  bookmarked_by_user
+  followed_by_user
 }

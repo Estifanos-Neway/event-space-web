@@ -9,4 +9,6 @@ export type EventPreview = {
         name: string
     }
     price: number
+    bookmarked_by_user?:string
+    followed_by_user?:string
 }

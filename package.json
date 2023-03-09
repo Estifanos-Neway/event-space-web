@@ -21,6 +21,8 @@
     "vue": "latest"
   },
   "dependencies": {
+    "@headlessui/vue": "^1.7.12",
+    "@heroicons/vue": "^2.0.16",
     "@pinia/nuxt": "^0.4.7",
     "flowbite": "^1.6.3",
     "flowbite-datepicker": "^1.2.2",

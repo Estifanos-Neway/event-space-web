@@ -1,5 +1,5 @@
 <template>
-    <div @click="router.push(`/events/${event.id}`)" class="bg-slate-200 p-3 cursor-pointer">
+    <div @click="router.push(`/events/${event.id}`)" class="bg-slate-200 p-5 px-10 cursor-pointer">
         <p class="font-bold">
             {{ event.title }}
         </p>
@@ -11,11 +11,17 @@
         <ul>
             <li>{{ event.city.name }}</li>
             <li>{{ event.date }}</li>
-            <li>{{ event.price }}</li>
+
             <li>{{ event.id }}</li>
         </ul>
         <br>
-        
+        <div class="flex justify-between items-end">
+            <div>
+                <span>{{ event.price }}</span>
+                <BuyTicket :event="event" />
+            </div>
+            <Bookmark :isPreview="true" :event="event" />
+        </div>
     </div>
 </template>
 

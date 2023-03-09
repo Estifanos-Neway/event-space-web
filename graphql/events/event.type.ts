@@ -20,4 +20,6 @@ export type Event = {
         id: string
         name: string
     }
+    bookmarked_by_user?:string
+    followed_by_user?:string
 }

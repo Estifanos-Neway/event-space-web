@@ -3,7 +3,7 @@ export interface GetEventQueryVars {
 }
 
 export interface GetEventQueryRes {
-    ventsByPk:
+    eventsByPk:
     {
         location: string
         bookmarks_count: number

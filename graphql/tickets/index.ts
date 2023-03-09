@@ -1,0 +1,1 @@
+export { default as addTicketMutation } from "./add-ticket.mutation.gql"
