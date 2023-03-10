@@ -19,6 +19,28 @@
                     <ErrorMessage name="description" />
                 </div>
                 <div class="flex flex-col gap-2">
+                    <label for="tags">
+                        Tags <span class="text-sm">(put space between each tag)</span>
+                    </label>
+                    <div class="flex gap-3">
+                        <div v-for="tag, index in tags" id="toast-default"
+                            class="flex items-center w-fit p-2 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800">
+                            <div class="ml-3 text-sm font-normal">{{ tag }}</div>
+                            <button type="button" @click="dropTag(index)"
+                                class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg p-1.5 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800">
+                                <span class="sr-only">drop</span>
+                                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <input type="text" name="tags" v-model="tag" @input="addTag" @focusout="addTag" />
+                </div>
+                <div class="flex flex-col gap-2">
                     <div>
                         Images
                     </div>
@@ -81,18 +103,32 @@
                     </div>
                 </div>
                 <div class="flex flex-col gap-2">
+                    <div>
+                        Map Coordinates
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="flex flex-col gap-2 text-sm">
+                            <label for="latitude">
+                                Latitude
+                            </label>
+                            <Field name="latitude" type="number" />
+                            <ErrorMessage name="latitude" />
+                        </div>
+                        <div class="flex flex-col gap-2 text-sm">
+                            <label for="longitude">
+                                Longitude
+                            </label>
+                            <Field name="longitude" type="number" />
+                            <ErrorMessage name="longitude" />
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2">
                     <label for="specificLocation">
                         Specific Location
                     </label>
                     <Field name="specificLocation" />
                     <ErrorMessage name="specificLocation" />
-                </div>
-                <div class="flex flex-col gap-2">
-                    <label for="tags">
-                        Tags
-                    </label>
-                    <Field name="tags" />
-                    <ErrorMessage name="description" />
                 </div>
                 <div class="flex flex-col gap-2">
                     <label for="title">
@@ -120,6 +156,8 @@ const schema = object({
     date: date().typeError("Date is required").required("Date is required").min(new Date(), "Date can't be set to past").label("Date"),
     price: number().transform((value) => (isNaN(value) ? 0 : value)).min(0).label("Price"),
     specificLocation: string().label("Specific Location"),
+    latitude: number().transform((value) => (isNaN(value) ? 0 : value)).min(-90).max(90),
+    longitude: number().transform((value) => (isNaN(value) ? 0 : value)).min(-180).max(180)
 })
 
 // Cities
@@ -151,9 +189,26 @@ function getSelectedImagesRef(): globalThis.Ref<Array<SelectedImage>> {
     return selectedImages
 }
 
+// tags
+const tagDelimiter = " "
+const tag = ref<string>("")
+const tags = ref<Array<string>>([])
+// watch(tag, () => {
+
+// })
+function addTag() {
+    if (tag.value.includes(tagDelimiter)) {
+        tags.value = tags.value.concat(tag.value.split(tagDelimiter).filter(t => t !== "" && !tags.value.includes(t)))
+        tag.value = ""
+    }
+}
+function dropTag(index: number) {
+    tags.value.splice(index, 1)
+}
 function onSubmit() {
     console.log("Adding event")
 }
+
 onMounted(() => {
     initDropdowns()
 })
