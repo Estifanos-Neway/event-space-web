@@ -1,9 +1,12 @@
 <template>
-    <!-- <div class="h-full overflow-scroll p-5">
-        <pre>{{ ticketsByEvent }}</pre>
-    </div> -->
-    <div>
-        <div class="p-4 flex flex-col gap-5">
+    <div class="h-full overflow-scroll p-5">
+        <div v-if="loading">
+            Loading...
+        </div>
+        <div v-else-if="error">
+            Error
+        </div>
+        <div v-else class="p-4 flex flex-col gap-5">
             <div v-for="ticketsAndEvents in ticketsByEvent" class="bg-gray-400 flex flex-col p-4 gap-5">
                 <div class="font-bold">
                     <NuxtLink :to="`/events/${ticketsAndEvents.event?.id}`"> {{ ticketsAndEvents.event?.title }}</NuxtLink>
@@ -26,10 +29,10 @@ import { EventPreview } from "~~/graphql/events/event-preview.type";
 import { MyTicketsRes } from "~~/graphql/tickets/ticket.query.types";
 import { myTicketsQuery } from "../graphql/tickets"
 import { Ticket } from "../graphql/tickets/ticket.type"
-import { initAccordions, initDropdowns } from 'flowbite'
+import { initAccordions } from 'flowbite'
 type organizedEvent = Array<{ event?: EventPreview, tickets?: Array<Ticket> }>
 
-const { loading, onResult, onError, error } = useQuery<MyTicketsRes, {}>(
+const { loading, onResult, onError, error, } = useQuery<MyTicketsRes, {}>(
     myTicketsQuery,
     {},
     {
@@ -38,16 +41,6 @@ const { loading, onResult, onError, error } = useQuery<MyTicketsRes, {}>(
 )
 let ticketsByEvent: globalThis.Ref<organizedEvent> = ref([])
 onResult(result => {
-    // const tempTicketsByEvent = {}
-    // result.data.me.tickets.forEach(ticket => {
-    //     const eventId = ticket.event.id
-    //     if (!tempTicketsByEvent[eventId]) {
-    //         tempTicketsByEvent[eventId] = []
-    //     }
-    //     tempTicketsByEvent[eventId].push(ticket)
-    // })
-    // ticketsByEvent.value = { ...tempTicketsByEvent }
-
     const tempTicketsByEvent: organizedEvent = []
     const eventIds: Array<string> = []
     result.data.me.tickets.forEach(ticket => {
@@ -62,6 +55,9 @@ onResult(result => {
         }
     })
     ticketsByEvent.value = [...tempTicketsByEvent]
+})
+onError(error => {
+    console.error("MyTicketsRes onError", error)
 })
 onMounted(() => {
     initAccordions()

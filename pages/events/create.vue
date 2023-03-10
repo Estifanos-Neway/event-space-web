@@ -1,7 +1,5 @@
 <template>
-    <div>
-        <CreateEvent v-if="userStore.isAuthorized" />
-    </div>
+    <CreateEvent  v-if="userStore.isAuthorized" />
 </template>
 
 <script setup lang="ts">

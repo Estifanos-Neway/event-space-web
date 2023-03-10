@@ -1,17 +1,23 @@
 <template>
     <div>
-        <label :for="fieldName"></label>
-        <input type="file" :name="fieldName" :accept="accept" :multiple="multiple" @change="handleSelection">
+
+        <button type="button"
+            class="rounded-md bg-white text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+            <label class="block py-2.5 px-3.5 cupo" for="fieldName">Upload Images</label>
+        </button>
+        <input class="invisible" type="file" id="fieldName" :accept="accept" :multiple="multiple" @change="handleSelection">
     </div>
 </template>
 
 <script setup lang="ts">
+import { SelectedImage } from './types';
+
 const props = withDefaults(
     defineProps<{
-        fieldName: string
-        accept: string
-        multiple: boolean
-        selectedFiles: globalThis.Ref<Array<string | ArrayBuffer>>
+        fieldName?: string
+        accept?: string
+        multiple?: boolean
+        selectedFiles: globalThis.Ref<Array<SelectedImage>>
     }>(),
     {
         fieldName: "fileSelector",
@@ -23,9 +29,9 @@ async function handleSelection(event: Event) {
     props.selectedFiles.value = []
     for (let i = 0; i < fileList.length; i++) {
         const b64 = await getBase64(fileList[i])
-        props.selectedFiles.value.push(b64)
+
+        props.selectedFiles.value.push({ b64, id: i, isThumbnail: i === 0 })
     }
-    console.log(props.selectedFiles.value)
 }
 
 async function getBase64(file: File): Promise<string | ArrayBuffer> {
