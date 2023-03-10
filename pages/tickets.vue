@@ -1,7 +1,5 @@
 <template>
-    <div>
-        Tickets
-    </div>
+    <TicketListing v-if="userStore.isAuthorized" />
 </template>
 
 <script setup lang="ts">

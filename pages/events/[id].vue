@@ -2,6 +2,8 @@
     <div class="h-full overflow-auto">
         <div v-if="result">
             <div>
+                {{ result.eventsByPk.price }}
+                <BuyTicket :event="result.eventsByPk" />
                 <Bookmark :isPreview="false" :event="result.eventsByPk" />
                 <Follow :event="result.eventsByPk" />
             </div>
@@ -28,7 +30,7 @@ const { result, loading, error, onError, refetch } = useQuery<GetEventQueryRes, 
         id: route.params.id as string
     },
     {
-        fetchPolicy:"network-only"
+        fetchPolicy: "network-only"
     }
 )
 onError(error => {

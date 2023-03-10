@@ -1,14 +1,14 @@
 <template>
     <div>
         <p>{{ thisEvent.user.followers_count }} Followers </p>
-        <div class="border-2 w-fit p-1 pr-3 border-gray-500 rounded-md cursor-pointer" @click.stop="toggleFollow"
+        <div class="border-2 w-fit p-1 pr-3 border-gray-500 rounded-md cupo" @click.stop="toggleFollow"
             :class="{ 'text-blue-800': adding || dropping }">
-            <div class="text-2xl">
+            <div class="text-xl">
                 <span v-if="thisEvent.followed_by_user">
                     <span>Following</span>
                 </span>
-                <span v-else class="flex gap-4 items-center">
-                    <Icon icon="material-symbols:bookmark-rounded" />
+                <span v-else class="flex gap-2 items-center">
+                    <Icon icon="material-symbols:add-rounded" class="text-3xl" />
                     <span>Follow</span>
                 </span>
             </div>
@@ -19,11 +19,14 @@
 <script setup lang="ts">
 import { Event } from '~~/graphql/events/event.type';
 import { Icon } from '@iconify/vue';
+import { useUserStore } from '~~/pinia-stores';
 
 const props = defineProps<{
     event: Event
 }>()
 
+const userStore = useUserStore()
+const router = useRouter()
 const thisEvent = { ...props.event, user: { ...props.event.user } }
 const { mutate: add, onDone: onAddDone, onError: onAddError, loading: adding } = addFollow()
 const { mutate: drop, onDone: onDropDone, onError: onDropError, loading: dropping } = dropFollow()
@@ -43,8 +46,11 @@ onDropError(error => {
 })
 
 function toggleFollow() {
-    if (adding.value || dropping.value) return
-    else if (thisEvent.followed_by_user) {
+    if (!userStore.isAuthorized) {
+        router.push("/signin")
+    } else if (adding.value || dropping.value) {
+        return
+    } else if (thisEvent.followed_by_user) {
         drop({ id: thisEvent.followed_by_user })
     } else {
         add({ followedId: thisEvent.user.id })

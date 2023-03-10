@@ -1,16 +1,20 @@
 import { useGeolocation } from '@vueuse/core'
 import { getEventByLocationQuery } from '~~/graphql/events';
-import { GetEventLocationRes, GetEventLocationVars } from '~~/graphql/events/get-event-by-location.types';
+import { GetEventsVars, GetEventsByLocationRes } from '~~/graphql/events/get-events.types';
 
 export function useEventsByLocation(offset: number, limit: number) {
     const { coords } = useGeolocation()
-    const queryReturn = useQuery<GetEventLocationRes, GetEventLocationVars>(
+    const queryReturn = useQuery<GetEventsByLocationRes, GetEventsVars>(
         getEventByLocationQuery,
         {
             lat: coords.value.latitude,
             long: coords.value.longitude,
             offset,
             limit,
+            orderBy: {},
+            date: {},
+            price: {},
+            cityId: {}
         },
         {
             fetchPolicy: "cache-and-network"

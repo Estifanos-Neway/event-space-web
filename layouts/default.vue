@@ -4,7 +4,7 @@
             <div v-show="generalStore.hasNotification"
                 class="bg-gray-300 dark:bg-gray-300 flex justify-between items-center px-6 h-10">
                 {{ generalStore.notification.message }}
-                <span @click="generalStore.clearNotification" class=" cursor-pointer">X</span>
+                <span @click="generalStore.clearNotification" class=" cupo">X</span>
             </div>
             <div v-if="!userStore.isAuthorized" class="max-h-screen overflow-hidden">
                 <div class="flex justify-between px-10 py-7 border-b">
@@ -51,7 +51,7 @@
                             </li>
                         </ul>
                     </div>
-                    <div @click="useUserSignOut" class="cursor-pointer">
+                    <div @click="useUserSignOut" class="cupo">
                         Log Out
                     </div>
                 </div>

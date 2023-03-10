@@ -7,8 +7,10 @@
         <div v-else-if="error">
             Loading...
         </div>
-        <div v-else v-for="event in result?.eventsByLocation">
-            <EventCard :event="event" />
+        <div v-else class="flex gap-2">
+            <div v-for="event in result?.eventsByLocation">
+                <EventCard :event="event" />
+            </div>
         </div>
     </div>
 </template>

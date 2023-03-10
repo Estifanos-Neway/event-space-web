@@ -1,5 +1,5 @@
 <template>
-    <div @click="router.push(`/events/${event.id}`)" class="bg-slate-200 p-5 px-10 cursor-pointer">
+    <div @click="router.push(`/events/${event.id}`)" class="bg-slate-200 p-5 px-10 cupo">
         <p class="font-bold">
             {{ event.title }}
         </p>

@@ -1,6 +1,6 @@
 <template>
     <div>
-        create
+        <CreateEvent v-if="userStore.isAuthorized" />
     </div>
 </template>
 
@@ -8,5 +8,5 @@
 import { useUserStore } from '@/pinia-stores';
 const router = useRouter()
 const userStore = useUserStore()
-if(!userStore.isAuthorized) router.replace("/signin")
+if (!userStore.isAuthorized) router.replace("/signin")
 </script>

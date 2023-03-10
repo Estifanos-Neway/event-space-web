@@ -13,8 +13,8 @@
         </div>
         <div v-else>
             <p>{{ thisEvent.bookmarks_count }} Bookmarks</p>
-            <div class="flex gap-4 items-center border-2 w-fit p-1 pr-3 border-gray-500 rounded-md cursor-pointer" @click.stop="toggleBookmark"
-                :class="{ 'text-blue-800': adding || dropping }">
+            <div class="flex gap-4 items-center border-2 w-fit p-1 pr-3 border-gray-500 rounded-md cupo"
+                @click.stop="toggleBookmark" :class="{ 'text-blue-800': adding || dropping }">
                 <div class="text-3xl">
                     <span v-if="thisEvent.bookmarked_by_user">
                         <Icon icon="material-symbols:bookmark-rounded" />
@@ -32,12 +32,15 @@
 <script setup lang="ts">
 import { EventPreview } from '~~/graphql/events/event-preview.type';
 import { Icon } from '@iconify/vue';
+import { useUserStore } from '~~/pinia-stores';
 
 const props = defineProps<{
     isPreview: boolean
     event: EventPreview
 }>()
 
+const userStore = useUserStore()
+const router = useRouter()
 const thisEvent = { ...props.event }
 const { mutate: add, onDone: onAddDone, onError: onAddError, loading: adding } = addBookmark()
 const { mutate: drop, onDone: onDropDone, onError: onDropError, loading: dropping } = dropBookmark()
@@ -57,8 +60,11 @@ onDropError(error => {
 })
 
 function toggleBookmark() {
-    if (adding.value || dropping.value) return
-    else if (thisEvent.bookmarked_by_user) {
+    if (!userStore.isAuthorized) {
+        router.push("/signin")
+    } else if (adding.value || dropping.value) {
+        return
+    } else if (thisEvent.bookmarked_by_user) {
         drop({ id: thisEvent.bookmarked_by_user })
     } else {
         add({ eventId: thisEvent.id })
