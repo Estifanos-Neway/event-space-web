@@ -45,10 +45,10 @@
                         Images
                     </div>
                     <div class="grid grid-cols-3 gap-6">
+                        <!-- <EventImagePreview v-for="image, index in oldImages" :imagesArray="oldImages" :index="index"
+                            :key="image.id" /> -->
                         <EventImagePreview v-for="image, index in selectedImages" :imagesArray="selectedImages"
                             :index="index" :key="image.id" />
-                        <!-- <EventImagePreview v-for="image, index in oldImages" :imagesArray="oldImages"
-                            :index="index" :key="image" /> -->
 
                     </div>
                     <div>
@@ -183,7 +183,7 @@ const tempInitialValues: ComposedEvent = {}
 if (props.oldEvent) {
     tempInitialValues.title = oldEvent?.title
     tempInitialValues.description = oldEvent?.description
-    tempInitialValues.date = oldEvent?.date
+    tempInitialValues.date = oldEvent?.date.toString().substring(0,16)
     tempInitialValues.latitude = oldEvent?.location[0]
     tempInitialValues.longitude = oldEvent?.location[1]
     tempInitialValues.specificAddress = oldEvent?.specificAddress
@@ -209,21 +209,34 @@ const citySearchText = ref("")
 const searchedCities = ref<Boolean[]>([])
 watch(citySearchText, () => {
     if (getCitiesResult.value) {
-        searchedCities.value = getCitiesResult.value?.cities.map(city => city.name.toLowerCase().includes(citySearchText.value.toLocaleLowerCase()))
+        searchedCities.value = getCitiesResult.value?.cities.map(
+            city => city.name.toLowerCase().includes(citySearchText.value.toLocaleLowerCase()
+            )
+        )
     }
 })
 
 // images
-const oldImages = ref<Array<string>>(props.oldEvent?.images ?? [])
-const selectedImages = ref<Array<SelectedImage>>([])
-function getSelectedImagesRef(): globalThis.Ref<Array<SelectedImage>> {
+const convertedOldImages: SelectedImage[] = (props.oldEvent?.images ?? []).map(
+    (image, index) => (
+        {
+            content: image,
+            id: -1 * (index + 1),
+            isThumbnail: index === 0,
+            isB64: false
+        }
+    )
+)
+// const oldImages = ref<SelectedImage[]>(convertedOldImages)
+const selectedImages = ref<SelectedImage[]>([...convertedOldImages])
+function getSelectedImagesRef(): globalThis.Ref<SelectedImage[]> {
     return selectedImages
 }
 
 // tags
 const tagDelimiter = " "
 const tag = ref<string>("")
-const tags = ref<Array<string>>(oldEvent?.tags ? [...oldEvent?.tags] : [])
+const tags = ref<string[]>(oldEvent?.tags ? [...oldEvent?.tags] : [])
 function addTag(event: Event) {
     if (tag.value.includes(tagDelimiter) || event.type === "focusout") {
         tags.value = tags.value.concat(tag.value.split(tagDelimiter).filter(t => t !== "" && !tags.value.includes(t)))
@@ -242,8 +255,15 @@ function onSubmit(composedEvent: ComposedEvent) {
     composedEvent.price = composedEvent.price ?? 0
 
     // upload images
-    if (selectedImages.value.length > 0) {
-        const fileUploadMutationText = `mutation FileUploadMutation {${createMUtationsFromImages(selectedImages.value)}}`
+    const selectedImagesLength = selectedImages.value.length
+    let images: string[] = []
+    for (let i = 0; i < selectedImagesLength; i++) {
+        const thisImage = selectedImages.value[i]
+        if (thisImage.isB64) break
+        else images.push(thisImage.content as string)
+    }
+    if (selectedImagesLength > images.length) {
+        const fileUploadMutationText = `mutation FileUploadMutation {${createMutationsFromImages(selectedImages.value)}}`
         const fileUploadMutationDoc: DocumentNode = gql(fileUploadMutationText)
         const { mutate: uploadImages, onDone: onUploadImagesDone, onError: onUploadImagesError, loading: uploading } = useMutation(
             fileUploadMutationDoc,
@@ -255,7 +275,13 @@ function onSubmit(composedEvent: ComposedEvent) {
 
         // save event
         onUploadImagesDone((result) => {
-            const images = Object.values(result.data).map((image: any) => image.filePath)
+            images = images.concat(Object.values(result.data).map((image: any) => image.filePath))
+            for (let i = 0; i < selectedImagesLength; i++) {
+                const thisImage = selectedImages.value[i]
+                if (thisImage.isThumbnail) {
+                    images.unshift(images.splice(i, 1)[0])
+                }
+            }
             saveEvent(composedEvent, images)
         })
         onUploadImagesError(error => {
@@ -264,11 +290,17 @@ function onSubmit(composedEvent: ComposedEvent) {
             isSubmitting.value = false
         })
     } else {
-        saveEvent(composedEvent, [])
+        for (let i = 0; i < selectedImagesLength; i++) {
+            const thisImage = selectedImages.value[i]
+            if (thisImage.isThumbnail) {
+                images.unshift(images.splice(i, 1)[0])
+            }
+        }
+        saveEvent(composedEvent, images)
     }
 }
 
-function saveEvent(composedEvent: ComposedEvent, images: Array<string>) {
+function saveEvent(composedEvent: ComposedEvent, images: string[]) {
     const { mutate, onDone, onError, loading } = props.submitter(
         {
             ...composedEvent,
@@ -296,12 +328,12 @@ function saveEvent(composedEvent: ComposedEvent, images: Array<string>) {
     })
 }
 
-function createMUtationsFromImages(images: Array<SelectedImage>): string {
+function createMutationsFromImages(images: SelectedImage[]): string {
     return images.reduce(
         (mutationText, image) => {
-            return mutationText + `M${getRandomString()}:uploadFile(
+            const newMutationText = !image.isB64 ? "" : `M${getRandomString()}:uploadFile(
                 arg:{
-                    base64Str:"${image.b64.toString().replace('data:', '').replace(/^.+,/, '')}",
+                    base64Str:"${image.content.toString().replace('data:', '').replace(/^.+,/, '')}",
                     category:"event-image",
                     extension:"${image.extension}",
                     fileName:"${getRandomString() + getRandomString()}${image.extension}"
@@ -309,6 +341,7 @@ function createMUtationsFromImages(images: Array<SelectedImage>): string {
                 ){
                     filePath
                 }\n`
+            return mutationText + newMutationText
         }
         , ""
     )

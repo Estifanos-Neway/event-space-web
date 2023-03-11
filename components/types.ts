@@ -1,8 +1,9 @@
 export type SelectedImage = {
     id: number
-    b64: string | ArrayBuffer
+    content: string | ArrayBuffer
     isThumbnail: boolean,
-    extension:string
+    extension?: string,
+    isB64: boolean
 }
 
 export type ComposedEvent = {
@@ -10,7 +11,7 @@ export type ComposedEvent = {
     description?: string
     tags?: Array<string>
     images?: Array<string>
-    date?: Date
+    date?: string
     price?: number
     cityId?: string
     latitude?: number

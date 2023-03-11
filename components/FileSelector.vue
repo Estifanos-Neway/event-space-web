@@ -24,12 +24,22 @@ const props = withDefaults(
         accept: "*/*",
         multiple: true,
     })
+let idCounter = 100000
 async function handleSelection(event: Event) {
     const fileList: FileList = event.target?.files
-    props.selectedFiles.value = []
+    // props.selectedFiles.value = []
+    const wasEmpty = props.selectedFiles.value.length === 0
     for (let i = 0; i < fileList.length; i++) {
         const b64 = await getBase64(fileList[i])
-        props.selectedFiles.value.push({ b64, id: i, isThumbnail: i === 0, extension: getFileExtension(fileList[i].name) })
+        props.selectedFiles.value.push(
+            {
+                content: b64,
+                id: idCounter++,
+                isThumbnail: i === 0 && wasEmpty,
+                extension: getFileExtension(fileList[i].name),
+                isB64: true
+            }
+        )
     }
 }
 
