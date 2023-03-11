@@ -1,7 +1,7 @@
 <template>
     <div class="p-5">
-        <Form v-slot="{ handleSubmit, isSubmitting }" :validation-schema="schema" :initial-values="initialValues">
-            <form @submit="handleSubmit($event, onSubmit)" class="flex flex-col gap-5 max-w-xl">
+        <Form v-slot="{ handleSubmit }" :validation-schema="schema" :initial-values="initialValues">
+            <form @submit.prevent="handleSubmit($event, onSubmit)" class="flex flex-col gap-5 max-w-xl" novalidate>
                 <div class="flex flex-col gap-2">
                     <label for="title">
                         Title
@@ -44,12 +44,15 @@
                     <div>
                         Images
                     </div>
-                    <div>
-                        <FileSelector fieldName="images" accept="image/*" :selectedFiles="getSelectedImagesRef()" />
-                    </div>
                     <div class="grid grid-cols-3 gap-6">
                         <EventImagePreview v-for="image, index in selectedImages" :imagesArray="selectedImages"
                             :index="index" :key="image.id" />
+                        <!-- <EventImagePreview v-for="image, index in oldImages" :imagesArray="oldImages"
+                            :index="index" :key="image" /> -->
+
+                    </div>
+                    <div>
+                        <FileSelector fieldName="images" accept="image/*" :selectedFiles="getSelectedImagesRef()" />
                     </div>
                 </div>
                 <div class="flex flex-col gap-2">
@@ -137,7 +140,7 @@
                     <Field name="price" type="number" />
                     <ErrorMessage name="price" />
                 </div>
-                <button :disabled="isSubmitting">Publish Event</button>
+                <button :disabled="isSubmitting" :class="{ 'text-blue-600': isSubmitting }">Publish Event</button>
             </form>
         </Form>
     </div>
@@ -151,8 +154,10 @@ import { initDropdowns } from "flowbite"
 import { Event } from '~~/graphql/events/event.type';
 import { getRandomString } from '~~/commons/functions';
 import { UseMutationReturn } from '@vue/apollo-composable';
-import { FetchResult } from '@apollo/client';
+import { DocumentNode, FetchResult } from '@apollo/client';
+import { useGeneralStore } from '~~/pinia-stores';
 
+const generalStore = useGeneralStore()
 const props = defineProps<
     {
         oldEvent?: Event
@@ -169,7 +174,7 @@ const schema = object({
     latitude: number().transform((value) => (isNaN(value) ? 0 : value)).min(-90).max(90),
     longitude: number().transform((value) => (isNaN(value) ? 0 : value)).min(-180).max(180),
     specificAddress: string().label("Specific Location"),
-    price: number().transform((value) => (isNaN(value) ? 0 : value)).min(0).label("Price"),
+    price: number().default(0).transform((value) => (isNaN(value) ? 0 : value)).min(0).label("Price"),
 })
 
 const oldEvent = props.oldEvent
@@ -209,13 +214,12 @@ watch(citySearchText, () => {
 })
 
 // images
+const oldImages = ref<Array<string>>(props.oldEvent?.images ?? [])
 const selectedImages = ref<Array<SelectedImage>>([])
 function getSelectedImagesRef(): globalThis.Ref<Array<SelectedImage>> {
     return selectedImages
 }
-// watch(selectedImages, () => {
-//     console.log(selectedImages)
-// })
+
 // tags
 const tagDelimiter = " "
 const tag = ref<string>("")
@@ -230,44 +234,65 @@ function dropTag(index: number) {
     tags.value.splice(index, 1)
 }
 
+const isSubmitting = ref(false);
+
 function onSubmit(composedEvent: ComposedEvent) {
+    isSubmitting.value = true
+    // modifications
+    composedEvent.price = composedEvent.price ?? 0
+
     // upload images
-    const fileUploadMutationText = `mutation FileUploadMutation {${createMUtationsFromImages(selectedImages.value)}}`
-    const fileUploadMutationDoc = gql(fileUploadMutationText)
-    const { mutate: uploadImages, onDone: onUploadImagesDone, onError: onUploadImagesError, loading: uploading } = useMutation(
-        fileUploadMutationDoc,
-        {
-            fetchPolicy: "no-cache"
-        }
-    )
-    uploadImages()
-    onUploadImagesDone((result) => {
-        const { mutate, onDone, onError, loading } = props.submitter(
+    if (selectedImages.value.length > 0) {
+        const fileUploadMutationText = `mutation FileUploadMutation {${createMUtationsFromImages(selectedImages.value)}}`
+        const fileUploadMutationDoc: DocumentNode = gql(fileUploadMutationText)
+        const { mutate: uploadImages, onDone: onUploadImagesDone, onError: onUploadImagesError, loading: uploading } = useMutation(
+            fileUploadMutationDoc,
             {
-                ...composedEvent,
-                tags: tags.value,
-                cityId: selectedCity.value,
-                images: Object.values(result.data).map((image: any) => image.filePath)
+                fetchPolicy: "no-cache"
             }
         )
-        mutate()
-        onDone(result => {
-            const id = props.getId(result)
-            if (id) {
-                useRouter().replace(`events/${id}`)
-            } else {
-                console.error("savingEventOnDone:", result)
-                // TODO: handel error
-            }
+        uploadImages()
+
+        // save event
+        onUploadImagesDone((result) => {
+            const images = Object.values(result.data).map((image: any) => image.filePath)
+            saveEvent(composedEvent, images)
         })
-        onError(error => {
-            console.error("savingEventOnError:", error)
-            // TODO: handel error
+        onUploadImagesError(error => {
+            console.error("uploadingEventImagesOnError:", error)
+            generalStore.setSystemErrorNotification()
+            isSubmitting.value = false
         })
+    } else {
+        saveEvent(composedEvent, [])
+    }
+}
+
+function saveEvent(composedEvent: ComposedEvent, images: Array<string>) {
+    const { mutate, onDone, onError, loading } = props.submitter(
+        {
+            ...composedEvent,
+            tags: tags.value,
+            cityId: selectedCity.value,
+            images
+        }
+    )
+    mutate()
+    onDone(result => {
+        const id = props.getId(result)
+        if (id) {
+            useRouter().replace(`/events/${id}`)
+        } else {
+            console.error("savingEventOnDone:", result)
+            generalStore.setSystemErrorNotification()
+            isSubmitting.value = false
+
+        }
     })
-    onUploadImagesError(error => {
-        console.error("uploadingEventImagesOnError:", error)
-        // TODO: handel error
+    onError(error => {
+        console.error("savingEventOnError:", error)
+        generalStore.setSystemErrorNotification()
+        isSubmitting.value = false
     })
 }
 

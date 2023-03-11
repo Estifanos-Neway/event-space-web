@@ -26,7 +26,6 @@ const props = withDefaults(
     })
 async function handleSelection(event: Event) {
     const fileList: FileList = event.target?.files
-    console.log(fileList[0])
     props.selectedFiles.value = []
     for (let i = 0; i < fileList.length; i++) {
         const b64 = await getBase64(fileList[i])

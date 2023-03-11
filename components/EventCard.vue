@@ -4,8 +4,8 @@
             {{ event.title }}
         </p>
         <p>
-            {{ event.description.substring(0, descriptionPreviewLength) }}
-            {{ event.description.length > descriptionPreviewLength ? `...` : `` }}
+            {{ description.length > descriptionPreviewLength ? description.substring(0,
+                descriptionPreviewLength) + `...` : description }}
         </p>
         <br>
         <ul>
@@ -30,8 +30,8 @@ import { EventPreview } from "@/graphql/events/event-preview.type"
 
 const router = useRouter()
 const descriptionPreviewLength: number = 124
-defineProps<{
+const props = defineProps<{
     event: EventPreview
 }>()
-
+const description = props.event.description ?? ""
 </script>
