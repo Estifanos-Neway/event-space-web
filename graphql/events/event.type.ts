@@ -1,8 +1,9 @@
 export type Event = {
-    location: string
+    location: [number, number]
     bookmarks_count: number
     city: {
         name: string
+        id: string
     }
     date: Date
     description: string
@@ -20,6 +21,6 @@ export type Event = {
         id: string
         name: string
     }
-    bookmarked_by_user?:string
-    followed_by_user?:string
+    bookmarked_by_user?: string
+    followed_by_user?: string
 }

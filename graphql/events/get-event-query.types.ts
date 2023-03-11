@@ -5,10 +5,11 @@ export interface GetEventQueryVars {
 export interface GetEventQueryRes {
     eventsByPk:
     {
-        location: string
+        location: [number, number]
         bookmarks_count: number
         city: {
             name: string
+            id: string
         }
         date: Date
         description: string

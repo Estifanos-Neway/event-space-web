@@ -26,11 +26,11 @@ const props = withDefaults(
     })
 async function handleSelection(event: Event) {
     const fileList: FileList = event.target?.files
+    console.log(fileList[0])
     props.selectedFiles.value = []
     for (let i = 0; i < fileList.length; i++) {
         const b64 = await getBase64(fileList[i])
-
-        props.selectedFiles.value.push({ b64, id: i, isThumbnail: i === 0 })
+        props.selectedFiles.value.push({ b64, id: i, isThumbnail: i === 0, extension: getFileExtension(fileList[i].name) })
     }
 }
 
@@ -41,5 +41,9 @@ async function getBase64(file: File): Promise<string | ArrayBuffer> {
         reader.onloadend = () => resolve(reader.result!);
         reader.onerror = error => reject(error);
     });
+}
+
+function getFileExtension(fileName: string) {
+    return fileName.substring(fileName.lastIndexOf("."))
 }
 </script>

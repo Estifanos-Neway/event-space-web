@@ -55,7 +55,7 @@
                         Log Out
                     </div>
                 </div>
-                <div class="col-span-5 max-h-screen overflow-hidden">
+                <div class="col-span-5 max-h-screen overflow-hidden pb-20">
                     <div class="flex justify-end px-10 py-7 border-b">
                         <ThemeToggle />
                     </div>

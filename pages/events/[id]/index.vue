@@ -8,6 +8,7 @@
                 <Follow :event="result.eventsByPk" />
             </div>
             <pre>{{ result }}</pre>
+            <NuxtLink :to="'/events/' + result.eventsByPk.id + '/edit'"><button>Edit</button></NuxtLink>
         </div>
         <div v-else-if="error">
             Error getting event detail <span @click="refetchEvents">[Retry]</span>
@@ -15,7 +16,6 @@
         <div v-else="loading">
             Loading...
         </div>
-
     </div>
 </template>
 
@@ -34,7 +34,7 @@ const { result, loading, error, onError, refetch } = useQuery<GetEventQueryRes, 
     }
 )
 onError(error => {
-    console.error("getting event detail onError:")
+    console.error("getting event detail onError:", error)
 })
 
 function refetchEvents() {

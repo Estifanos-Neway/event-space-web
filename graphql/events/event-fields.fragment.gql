@@ -3,6 +3,7 @@ fragment eventFields on Events {
   bookmarks_count
   city {
     name
+    id
   }
   date
   description
