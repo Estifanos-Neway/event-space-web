@@ -295,7 +295,7 @@ async function uploadAvatar(event: Event) {
                         id: props.user.id,
                         description: props.user.description,
                         name: props.user.name,
-                        avatarUrl: filePath + `?t=${Date.now()}`,
+                        avatarUrl: filePath,
                     },
                     fetchPolicy: "network-only"
                 }
@@ -304,7 +304,7 @@ async function uploadAvatar(event: Event) {
             onUpdateAvatarUrlDone(result => {
                 const updatedAvatarUrl = result.data?.updateUsersByPk.avatarUrl
                 if (typeof updatedAvatarUrl === "string") {
-                    props.user.avatarUrl = updatedAvatarUrl
+                    props.user.avatarUrl = updatedAvatarUrl + `?${Date.now()}`
                     finishUploadingAvatar()
                 } else {
                     finishUploadingAvatar()

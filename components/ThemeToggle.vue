@@ -1,5 +1,5 @@
 <template>
-    <div @click="generalStore.toggleDarkMode" class="cupo">
+    <div @click="generalStore.toggleDarkMode" class="cupo text-3xl">
         <Icon v-if="generalStore.isDark" icon="line-md:moon-filled-to-sunny-filled-transition" />
         <Icon v-else icon="line-md:sunny-filled-loop-to-moon-filled-transition" />
     </div>

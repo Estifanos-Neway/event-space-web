@@ -1,7 +1,7 @@
 <template>
     <div class="w-full h-full">
         <div v-if="url" class="w-full h-full">
-            <img :class="`w-full h-full rounded-full ring-2 ring-gray-300 dark:ring-gray-500`" :src="url"
+            <img :class="`w-full h-full rounded-full object-cover ring-2 ring-gray-300 dark:ring-gray-500`" :src="url"
                 alt="Bordered avatar">
         </div>
         <div v-else class="w-full h-full">

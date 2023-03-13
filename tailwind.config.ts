@@ -14,10 +14,29 @@ export default <Partial<Config>>{
     extend: {
       colors: {
         primary: "#A500CE",
-        background: "#F5F5F5",
-        onBackground: "#343434",
-        backgroundDark: "#343434",
-        onBackgroundDark: "#F5F5F5",
+        secondary: "",
+        background: "#FFFFFF",
+        surface: "#ECECEC",
+        error: "#CE0000",
+        thin_gray: "#BFBFBF",
+        on: {
+          primary: "#EBEBEB",
+          secondary: "",
+          background: "#474747",
+          surface: "343434",
+        },
+        dark: {
+          background: "#343434",
+          surface: "",
+          thin_gray: "#BFBFBF",
+          on: {
+            background: "#F5F5F5",
+            surface: "",
+          }
+        }
+      },
+      fontFamily: {
+        logo: "Rajdhani"
       }
     },
   },
