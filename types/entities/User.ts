@@ -5,4 +5,6 @@ export interface User {
     description: string
     avatarUrl: string
     memberSince: string
+    followersCount: number,
+    followingCount: number
 }

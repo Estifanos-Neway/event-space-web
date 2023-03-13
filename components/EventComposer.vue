@@ -23,7 +23,7 @@
                         Tags <span class="text-sm">(put space between each tag)</span>
                     </label>
                     <div class="flex gap-3">
-                        <div v-for="tag, index in tags" id="toast-default"
+                        <div v-for="tag, index in tags" :key="tag + index" id="toast-default"
                             class="flex items-center w-fit p-2 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800">
                             <div class="ml-3 text-sm font-normal">{{ tag }}</div>
                             <button type="button" @click="dropTag(index)"
@@ -45,11 +45,8 @@
                         Images
                     </div>
                     <div class="grid grid-cols-3 gap-6">
-                        <!-- <EventImagePreview v-for="image, index in oldImages" :imagesArray="oldImages" :index="index"
-                            :key="image.id" /> -->
                         <EventImagePreview v-for="image, index in selectedImages" :imagesArray="selectedImages"
                             :index="index" :key="image.id" />
-
                     </div>
                     <div>
                         <FileSelector fieldName="images" accept="image/*" :selectedFiles="getSelectedImagesRef()" />
@@ -93,7 +90,7 @@
                         <ul class="h-48 px-3 pb-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200"
                             aria-labelledby="dropdownSearchButton">
                             <li v-for="(city, index) in getCitiesResult?.cities"
-                                v-show="!citySearchText || searchedCities[index]">
+                                v-show="!citySearchText || searchedCities[index]" :key="city.id">
                                 <div class="flex items-center pl-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
                                     <input :id="city.id" type="radio" :value="city.id" v-model="selectedCity" name="city"
                                         class="w-4 h-4 text-gray-600 bg-gray-100 border-gray-300 rounded focus:ring-gray-500 dark:focus:ring-gray-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
@@ -183,7 +180,7 @@ const tempInitialValues: ComposedEvent = {}
 if (props.oldEvent) {
     tempInitialValues.title = oldEvent?.title
     tempInitialValues.description = oldEvent?.description
-    tempInitialValues.date = oldEvent?.date.toString().substring(0,16)
+    tempInitialValues.date = oldEvent?.date.toString().substring(0, 16)
     tempInitialValues.latitude = oldEvent?.location[0]
     tempInitialValues.longitude = oldEvent?.location[1]
     tempInitialValues.specificAddress = oldEvent?.specificAddress
@@ -237,7 +234,8 @@ function getSelectedImagesRef(): globalThis.Ref<SelectedImage[]> {
 const tagDelimiter = " "
 const tag = ref<string>("")
 const tags = ref<string[]>(oldEvent?.tags ? [...oldEvent?.tags] : [])
-function addTag(event: Event) {
+// @ts-ignore
+function addTag(event) {
     if (tag.value.includes(tagDelimiter) || event.type === "focusout") {
         tags.value = tags.value.concat(tag.value.split(tagDelimiter).filter(t => t !== "" && !tags.value.includes(t)))
         tag.value = ""
@@ -336,7 +334,7 @@ function createMutationsFromImages(images: SelectedImage[]): string {
                     base64Str:"${image.content.toString().replace('data:', '').replace(/^.+,/, '')}",
                     category:"event-image",
                     extension:"${image.extension}",
-                    fileName:"${getRandomString() + getRandomString()}${image.extension}"
+                    fileName:"${getRandomString() + Date.now()}${image.extension}"
                 }
                 ){
                     filePath

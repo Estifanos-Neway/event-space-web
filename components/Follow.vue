@@ -1,6 +1,6 @@
 <template>
     <div>
-        <p>{{ thisEvent.user.followers_count }} Followers </p>
+        <p>{{ thisEvent.user.followersCount }} Followers </p>
         <div class="border-2 w-fit p-1 pr-3 border-gray-500 rounded-md cupo" @click.stop="toggleFollow"
             :class="{ 'text-blue-800': adding || dropping }">
             <div class="text-xl">
@@ -32,14 +32,14 @@ const { mutate: add, onDone: onAddDone, onError: onAddError, loading: adding } =
 const { mutate: drop, onDone: onDropDone, onError: onDropError, loading: dropping } = dropFollow()
 onAddDone(result => {
     thisEvent.followed_by_user = result.data?.insertFollowsOne.id
-    thisEvent.user.followers_count++
+    thisEvent.user.followersCount++
 })
 onAddError(error => {
     console.error("onAddError:", error)
 })
 onDropDone(() => {
     thisEvent.followed_by_user = undefined
-    thisEvent.user.followers_count--
+    thisEvent.user.followersCount--
 })
 onDropError(error => {
     console.error("onDropError:", error)

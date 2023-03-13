@@ -1,1 +1,1 @@
-export const staticServerUrl = "http://localhost:8080/"
+export const staticServerBaseUrl = "http://localhost:8080/"

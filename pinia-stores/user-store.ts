@@ -8,7 +8,9 @@ export const useUserStore = defineStore("userStore", {
         description: "",
         avatarUrl: "",
         memberSince: "",
-        refreshToken:""
+        refreshToken: "",
+        followersCount: 0,
+        followingCount: 0
     }),
     getters: {
         isAuthorized(state) {

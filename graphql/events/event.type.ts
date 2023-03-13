@@ -1,3 +1,5 @@
+import { User } from "~~/types/entities"
+
 export type Event = {
     location: [number, number]
     bookmarks_count: number
@@ -13,14 +15,7 @@ export type Event = {
     specificAddress: string
     tags: Array<string>
     title: string
-    user: {
-        avatarUrl: string
-        description: string
-        email: string
-        followers_count: number
-        id: string
-        name: string
-    }
+    user: User
     bookmarked_by_user?: string
     followed_by_user?: string
 }

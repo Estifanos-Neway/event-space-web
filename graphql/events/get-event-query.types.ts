@@ -1,3 +1,5 @@
+import { User } from "~~/types/entities"
+
 export interface GetEventQueryVars {
     id: string
 }
@@ -19,13 +21,6 @@ export interface GetEventQueryRes {
         specificAddress: string
         tags: Array<string>
         title: string
-        user: {
-            avatarUrl: string
-            description: string
-            email: string
-            followers_count: number
-            id: string
-            name: string
-        }
+        user: User
     }
 }

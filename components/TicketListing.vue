@@ -7,13 +7,13 @@
             Error
         </div>
         <div v-else class="p-4 flex flex-col gap-5">
-            <div v-for="ticketsAndEvents in ticketsByEvent" class="bg-gray-400 flex flex-col p-4 gap-5">
+            <div v-for="ticketsAndEvents in ticketsByEvent" class="bg-gray-400 flex flex-col p-4 gap-5" :key="ticketsAndEvents.event?.id">
                 <div class="font-bold">
                     <NuxtLink :to="`/events/${ticketsAndEvents.event?.id}`"> {{ ticketsAndEvents.event?.title }}</NuxtLink>
                 </div>
                 <hr>
                 <div class="flex flex-col gap-3">
-                    <div v-for="ticket in ticketsAndEvents.tickets">
+                    <div v-for="ticket in ticketsAndEvents.tickets" :key="ticket.id">
                         <span class="font-bold">{{ ticket.id }}</span>
                         <br>
                         {{ ticket.createdAt }} ( {{ ticket.isValid }})

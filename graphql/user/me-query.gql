@@ -1,10 +1,7 @@
+#import "./user-fields.fragment.gql"
+
 query Me {
   me {
-    avatarUrl
-    description
-    email
-    id
-    memberSince
-    name
+    ...userFields
   }
 }

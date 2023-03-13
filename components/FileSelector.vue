@@ -3,13 +3,15 @@
 
         <button type="button"
             class="rounded-md bg-white text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-            <label class="block py-2.5 px-3.5 cupo" for="fieldName">Upload Images</label>
+            <label class="block py-2.5 px-3.5 cupo" for="fileSelector">Upload Images</label>
         </button>
-        <input class="invisible" type="file" id="fieldName" :accept="accept" :multiple="multiple" @change="handleSelection">
+        <input class="invisible" type="file" id="fileSelector" :accept="accept" :multiple="multiple"
+            @change="handleSelection">
     </div>
 </template>
 
 <script setup lang="ts">
+import { fileToBase64, getFileExtension } from '~~/commons/functions';
 import { SelectedImage } from './types';
 
 const props = withDefaults(
@@ -26,11 +28,12 @@ const props = withDefaults(
     })
 let idCounter = 100000
 async function handleSelection(event: Event) {
+    // @ts-ignore
     const fileList: FileList = event.target?.files
     // props.selectedFiles.value = []
     const wasEmpty = props.selectedFiles.value.length === 0
     for (let i = 0; i < fileList.length; i++) {
-        const b64 = await getBase64(fileList[i])
+        const b64 = await fileToBase64(fileList[i])
         props.selectedFiles.value.push(
             {
                 content: b64,
@@ -41,18 +44,5 @@ async function handleSelection(event: Event) {
             }
         )
     }
-}
-
-async function getBase64(file: File): Promise<string | ArrayBuffer> {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onloadend = () => resolve(reader.result!);
-        reader.onerror = error => reject(error);
-    });
-}
-
-function getFileExtension(fileName: string) {
-    return fileName.substring(fileName.lastIndexOf("."))
 }
 </script>

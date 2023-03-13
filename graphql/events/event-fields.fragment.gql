@@ -1,3 +1,5 @@
+#import "../user/user-fields.fragment.gql"
+
 fragment eventFields on Events {
   location
   bookmarks_count
@@ -14,12 +16,7 @@ fragment eventFields on Events {
   tags
   title
   user {
-    avatarUrl
-    description
-    email
-    followers_count
-    id
-    name
+    ...userFields
   }
   bookmarked_by_user
   followed_by_user

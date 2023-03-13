@@ -62,7 +62,7 @@
                     <ul class="h-48 px-3 pb-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200"
                         aria-labelledby="dropdownSearchButton">
                         <li v-for="(city, index) in getCitiesResult?.cities"
-                            v-show="!citySearchText || searchedCities[index]">
+                            v-show="!citySearchText || searchedCities[index]" :key="city.id">
                             <div class="flex items-center pl-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
                                 <input :id="city.id" type="checkbox" :value="city.id" v-model="selectedCities"
                                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
@@ -88,7 +88,7 @@
                 placeholder="Search Events...">
         </div>
         <br>
-        <div v-for="event in events" class="mb-3">
+        <div v-for="event in events" class="mb-3" :key="event.id">
             <EventCard :event="event" />
         </div>
         <div :class="{ invisible: !loading }">
@@ -145,7 +145,7 @@ watch(coords, () => {
     queryVars.lat = coords.value.latitude
     queryVars.long = coords.value.longitude
 })
-const sortByLocation = ref<boolean>(false)
+const sortByLocation = ref<boolean>(true)
 watch(sortByLocation, () => {
     if (sortByLocation.value) {
         setQueries("location")
@@ -179,6 +179,7 @@ watch(sortBy, (newValue) => {
     if (newValue != "none") {
         sortByLocation.value = false
     }
+    // @ts-ignore
     queryVars.orderBy = sortBys[newValue]
 })
 
@@ -197,8 +198,6 @@ watch([minPrice, maxPrice], ([minP, maxP]) => {
 })
 
 // filter by date
-// const today = new Date()
-// `${today.getFullYear()}-${today.getMonth().toString().padStart(2, '0')}-${today.getDay().toString().padStart(2, '0')}`
 const minDate = ref<string>()
 const maxDate = ref<string>()
 watch([minDate, maxDate], ([minD, maxD]) => {

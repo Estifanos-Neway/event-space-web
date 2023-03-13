@@ -8,7 +8,7 @@
             Loading...
         </div>
         <div v-else class="flex gap-2">
-            <div v-for="event in result?.eventsByLocation">
+            <div v-for="event in result?.eventsByLocation" :key="event.id">
                 <EventCard :event="event" />
             </div>
         </div>

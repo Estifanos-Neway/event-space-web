@@ -1,14 +1,17 @@
 <template>
     <div class="h-full overflow-auto">
-        <div v-if="result">
+        <div v-if="result?.eventsByPk">
             <div>
                 {{ result.eventsByPk.price }}
                 <BuyTicket :event="result.eventsByPk" />
                 <Bookmark :isPreview="false" :event="result.eventsByPk" />
                 <Follow :event="result.eventsByPk" />
             </div>
-            <pre>{{ result }}</pre>
-            <NuxtLink :to="'/events/' + result.eventsByPk.id + '/edit'"><button>Edit</button></NuxtLink>
+            <pre>{{ result.eventsByPk }}</pre>
+            <button v-if="userStore.id === result.eventsByPk.user.id">
+                <NuxtLink :to="'/events/' + result.eventsByPk.id + '/edit'"><button>Edit</button></NuxtLink>
+                <div class="text-red-500" @click="isDeleteConfirmPopupOpen = true">Delete</div>
+            </button>
         </div>
         <div v-else-if="error">
             Error getting event detail <span @click="refetchEvents">[Retry]</span>
@@ -16,15 +19,77 @@
         <div v-else="loading">
             Loading...
         </div>
+
+        <!-- Delete confirmation pop -->
+        <TransitionRoot as="template" :show="isDeleteConfirmPopupOpen">
+            <Dialog as="div" class="relative z-10" @close="closeDeleteConfirmPopup">
+                <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100"
+                    leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
+                    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                </TransitionChild>
+
+                <div class="fixed inset-0 z-10 overflow-y-auto">
+                    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                        <TransitionChild as="template" enter="ease-out duration-300"
+                            enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                            enter-to="opacity-100 translate-y-0 sm:scale-100" leave="ease-in duration-200"
+                            leave-from="opacity-100 translate-y-0 sm:scale-100"
+                            leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+                            <DialogPanel
+                                class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+                                <div class="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
+                                    <button type="button"
+                                        class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none"
+                                        @click="closeDeleteConfirmPopup">
+                                        <span class="sr-only">Close</span>
+                                        <XMarkIcon class="h-6 w-6" aria-hidden="true" />
+                                    </button>
+                                </div>
+                                <div class="sm:flex sm:items-start">
+                                    <div
+                                        class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                                        <ExclamationTriangleIcon class="h-6 w-6 text-red-600" aria-hidden="true" />
+                                    </div>
+                                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                        <DialogTitle as="h3" class="text-base font-semibold leading-6 text-gray-900">
+                                            Deleting an event</DialogTitle>
+                                        <div class="mt-2">
+                                            <p class="text-sm text-gray-500">Are you sure you want to delete this event?</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                                    <button type="button"
+                                        class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+                                        @click="deleteEvent">Delete</button>
+                                    <button type="button"
+                                        class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                                        @click="closeDeleteConfirmPopup">Cancel</button>
+                                </div>
+                            </DialogPanel>
+                        </TransitionChild>
+                    </div>
+                </div>
+            </Dialog>
+        </TransitionRoot>
     </div>
 </template>
 
 <script setup lang="ts">
 import { GetEventQueryRes, GetEventQueryVars } from '~~/graphql/events/get-event-query.types';
 import { getEventQuery } from "~~/graphql/events"
+import { useUserStore } from '~~/pinia-stores';
+import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
+import { ExclamationTriangleIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { Event } from '~~/graphql/events/event.type';
+import { deleteEventMutation } from '~~/graphql/events'
+import { DeleteEventRes, DeleteEventVars } from '~~/graphql/events/delete-event.mutation.types'
 
+const userStore = useUserStore()
 const route = useRoute()
-const { result, loading, error, onError, refetch } = useQuery<GetEventQueryRes, GetEventQueryVars>(
+const router = useRouter()
+
+const { result, error, onError: onQueryDetailsError, refetch } = useQuery<GetEventQueryRes, GetEventQueryVars>(
     getEventQuery,
     {
         id: route.params.id as string
@@ -33,11 +98,36 @@ const { result, loading, error, onError, refetch } = useQuery<GetEventQueryRes, 
         fetchPolicy: "network-only"
     }
 )
-onError(error => {
+
+onQueryDetailsError(error => {
     console.error("getting event detail onError:", error)
 })
 
 function refetchEvents() {
     refetch()
+}
+
+const { mutate, onError, onDone, loading: deleting } = useMutation<DeleteEventRes, DeleteEventVars>(
+    deleteEventMutation,
+    {
+        fetchPolicy: "network-only"
+    }
+)
+onDone(() => {
+    router.replace("/events")
+})
+onError(error => {
+    console.error("deleting event onError:", error)
+})
+function deleteEvent() {
+    if (result.value) {
+        mutate({ id: result.value.eventsByPk.id })
+    }
+}
+
+// deleting dialog
+const isDeleteConfirmPopupOpen = ref(false)
+function closeDeleteConfirmPopup() {
+    if (!deleting.value) isDeleteConfirmPopupOpen.value = false
 }
 </script>

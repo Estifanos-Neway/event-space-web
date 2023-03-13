@@ -12,13 +12,13 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue';
 import { SelectedImage } from './types';
-import { staticServerUrl } from "~~/commons/variables"
+import { staticServerBaseUrl } from "~~/commons/variables"
 const props = defineProps<{
     imagesArray: Array<SelectedImage>,
     index: number
 }>()
 const image = props.imagesArray[props.index]
-const imgSrc = (image.isB64 ? "" : staticServerUrl) + image.content
+const imgSrc = (image.isB64 ? "" : staticServerBaseUrl) + image.content
 function deleteImage() {
     props.imagesArray.splice(props.index, 1)
     if (image.isThumbnail && props.imagesArray.length > 0) {

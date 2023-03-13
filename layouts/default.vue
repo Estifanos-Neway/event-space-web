@@ -2,7 +2,7 @@
     <div :class="{ dark: generalStore.isDark }">
         <div class="bg-background dark:bg-backgroundDark text-onBackground dark:text-onBackgroundDark min-h-screen">
             <div v-show="generalStore.hasNotification"
-                class="fixed w-screen bg-gray-300 dark:bg-gray-300 flex justify-between items-center px-6 h-10">
+                class="fixed w-screen bg-gray-300 dark:bg-gray-300 flex justify-between items-center px-6 h-10 z-50">
                 {{ generalStore.notification.message }}
                 <span @click="generalStore.clearNotification" class=" cupo">X</span>
             </div>
@@ -56,7 +56,8 @@
                     </div>
                 </div>
                 <div class="col-span-5 max-h-screen overflow-hidden pb-20">
-                    <div class="flex justify-end px-10 py-7 border-b">
+                    <div class="flex justify-between px-10 py-7 border-b">
+                        <Profile />
                         <ThemeToggle />
                     </div>
                     <slot />
@@ -70,10 +71,12 @@
 import { useGeneralStore, useUserStore } from '@/pinia-stores';
 import { meQueryResponse } from '@/graphql/user/me-query.types';
 import { meQuery } from '@/graphql/user';
+import { initDropdowns } from 'flowbite';
 const generalStore = useGeneralStore()
 const userStore = useUserStore()
 const { getToken } = useApollo()
 onMounted(() => {
+    initDropdowns()
     getToken().then(token => {
         if (token) {
             const { onResult } = useQuery<meQueryResponse>(meQuery, null, {
@@ -87,7 +90,7 @@ onMounted(() => {
             userStore.$reset()
         }
     }).catch(error => {
-        console.error("default layout getToken",error)
+        console.error("default layout getToken", error)
     })
 })
 </script>
