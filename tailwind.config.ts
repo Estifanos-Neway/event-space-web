@@ -36,6 +36,7 @@ export default <Partial<Config>>{
         }
       },
       fontFamily: {
+        default: "Montserrat",
         logo: "Rajdhani"
       }
     },

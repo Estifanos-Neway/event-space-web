@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="h-full overflow-auto">
         Home
         <div v-if="loading">
             Loading...
@@ -7,10 +7,8 @@
         <div v-else-if="error">
             Loading...
         </div>
-        <div v-else class="flex gap-2">
-            <div v-for="event in result?.eventsByLocation" :key="event.id">
-                <EventCard :event="event" />
-            </div>
+        <div v-else class="flex gap-14 w-full h-fit flex-wrap justify-center ">
+            <EventCard v-for="event in result?.eventsByLocation" :key="event.id" :event="event" />
         </div>
     </div>
 </template>

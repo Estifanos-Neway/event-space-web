@@ -1,67 +1,55 @@
 <template>
     <div :class="{ dark: generalStore.isDark }">
-        <div class="bg-background dark:bg-[#444343] text-on-background dark:text-dark-on-background min-h-screen">
+        <div
+            class="bg-background dark:bg-[#444343] text-on-background dark:text-dark-on-background font-default tracking-wider leading-relaxed min-h-screen">
             <div v-show="generalStore.hasNotification"
                 class="fixed w-screen bg-gray-300 dark:bg-gray-300 flex justify-between items-center px-6 h-10 z-50">
                 {{ generalStore.notification.message }}
                 <span @click="generalStore.clearNotification" class=" cupo">X</span>
             </div>
             <div v-if="!userStore.isAuthorized" class="max-h-screen overflow-hidden">
-                <div class="flex justify-between px-10E7E7E7 py-7 px-5 border-b">
-                    <Logo />
-                    <div class="flex items-center gap-6">
-                        <div class="flex items-center gap-6">
-                            <!-- <div>
-                                <NuxtLink to="/events">Events</NuxtLink>
-                            </div>
-                            <span>
-                                |
-                            </span>
-                            <div class="flex gap-2">
-                                <NuxtLink to="/signin">Sign In</NuxtLink>
-                                <NuxtLink to="/signup">Sign Up</NuxtLink>
-                            </div> -->
-                            <div class="flex items-center gap-2">
-                                <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown"
-                                    class="text-on-background" type="button">
-                                    <svg class="w-7 h-7" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path clip-rule="evenodd" fill-rule="evenodd"
-                                            d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z">
-                                        </path>
-                                    </svg>
-                                </button>
-                            </div>
-                            <!-- Dropdown menu -->
-                            <div id="dropdown"
-                                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                                    aria-labelledby="dropdownDefaultButton">
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Settings</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Earnings</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
-                                            out</a>
-                                    </li>
-                                </ul>
-                            </div>
+                <div id="top-nav-bar" class="fixed h-20 bg-surface transition-transform -translate-y-20">
 
-                        </div>
-                        <!-- <ThemeToggle /> -->
-                    </div>
                 </div>
-                <div>
+
+                <nav class="py-5 px-5 md:px-6 lg:px-20 border-b">
+                    <div class=" flex flex-wrap items-center justify-between md:mt-6">
+                        <Logo />
+                        <button data-collapse-toggle="navbar-solid-bg" type="button"
+                            class="inline-flex items-center p-2 ml-3 text-gray-500 rounded-lg md:hidden"
+                            aria-controls="navbar-solid-bg" aria-expanded="false">
+                            <span class="sr-only">Open main menu</span>
+                            <svg class="w-7 h-7" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path clip-rule="evenodd" fill-rule="evenodd"
+                                    d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z">
+                                </path>
+                            </svg>
+                        </button>
+                        <div class="hidden w-full md:block max-md:mt-6 md:w-[70%] pl-1 text-lg font-medium max-md:border-t"
+                            id="navbar-solid-bg">
+                            <ul
+                                class="flex flex-col w-full gap-4 max-md:mt-4 rounded-lg md:flex-row md:justify-end md:items-center md:space-x-8 md:mt-0 md:font-medium md:border-0 md:bg-transparent dark:bg-gray-800 md:dark:bg-transparent dark:border-gray-700">
+                                <li>
+                                    <NuxtLink to="/events" class="flex items-center">
+                                        <Icon icon="material-symbols:chevron-right-rounded md:hidden" class="text-2xl" />
+                                        Events
+                                    </NuxtLink>
+                                </li>
+                                <div class="flex justify-between gap-10 w-full md:max-w-md">
+                                    <li class="btn">
+                                        <NuxtLink to="/signin">Sign In</NuxtLink>
+                                    </li>
+                                    <li class="btn bg-primary text-on-primary">
+                                        <NuxtLink to="/signup">Sign Up</NuxtLink>
+                                    </li>
+                                </div>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+
+                <div class="h-[90vh]">
                     <slot />
                 </div>
             </div>
@@ -117,7 +105,7 @@
                             <ThemeToggle /> -->
                         </div>
                     </div>
-                    <div class="h-[95vh]">
+                    <div class="h-[90vh]">
                         <slot />
                     </div>
                 </div>
@@ -130,7 +118,7 @@
 import { useGeneralStore, useUserStore } from '@/pinia-stores';
 import { meQueryResponse } from '@/graphql/user/me-query.types';
 import { meQuery } from '@/graphql/user';
-import { initDrawers, initDropdowns } from 'flowbite';
+import { initDrawers, initDropdowns, initCollapses } from 'flowbite';
 import { Icon } from '@iconify/vue';
 
 const generalStore = useGeneralStore()
@@ -140,6 +128,7 @@ const { getToken } = useApollo()
 onMounted(() => {
     initDropdowns()
     initDrawers()
+    initCollapses()
     getToken().then(token => {
         if (token) {
             const { onResult } = useQuery<meQueryResponse>(meQuery, null, {

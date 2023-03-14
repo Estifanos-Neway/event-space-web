@@ -1,5 +1,5 @@
 <template>
-    <div @scroll="handleScroll" ref="scrollingList" class="h-full overflow-scroll p-5">
+    <div @scroll="handleScroll" ref="scrollingList" class="h-full overflow-auto p-5">
 
         <div class="flex gap-4">
             <div>
