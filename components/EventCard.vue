@@ -1,6 +1,6 @@
 <template>
     <div @click="router.push(`/events/${event.id}`)" class="border-2 border-gray-300 w-[85%] sm:w-[75%] md:w-[65%] lg:w-[400px] cupo rounded-xl overflow-hidden">
-        <div class="h-64">
+        <div class="h-52">
             <img v-if="event.images" :src="createStaticServerLink(event.images)" class="w-full h-full object-cover " />
             <div v-else class="w-full h-full bg-gray-800">
 
@@ -56,7 +56,7 @@ import { Icon } from '@iconify/vue';
 import { createStaticServerLink } from "~~/commons/functions";
 
 const router = useRouter()
-const descriptionPreviewLength: number = 124
+const descriptionPreviewLength: number = 90
 const props = defineProps<{
     event: EventPreview
 }>()

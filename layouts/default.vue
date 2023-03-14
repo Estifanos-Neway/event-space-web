@@ -12,8 +12,8 @@
 
                 </div>
 
-                <nav class="py-5 px-5 md:px-6 lg:px-20 border-b">
-                    <div class=" flex flex-wrap items-center justify-between md:mt-6">
+                <nav class="py-5 px-5 md:px-6 md:py-7 lg:px-20 border-b">
+                    <div class=" flex flex-wrap items-center justify-between">
                         <Logo />
                         <button data-collapse-toggle="navbar-solid-bg" type="button"
                             class="inline-flex items-center p-2 ml-3 text-gray-500 rounded-lg md:hidden"
@@ -36,7 +36,7 @@
                                         Events
                                     </NuxtLink>
                                 </li>
-                                <div class="flex justify-between gap-10 w-full md:max-w-md">
+                                <div class="flex justify-between gap-10 w-full md:max-w-[400px]">
                                     <li class="btn">
                                         <NuxtLink to="/signin">Sign In</NuxtLink>
                                     </li>
