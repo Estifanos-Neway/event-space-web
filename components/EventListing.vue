@@ -3,7 +3,7 @@
         <div class="w-[95%] max-w-[1400px] flex flex-col  gap-12 items-start">
             <div class="w-full">
                 <h3 class="text-start w-full font-bold text-2xl mb-4">{{ title }}</h3>
-                <div class="flex w-full gap-3 h-12 items-center max-w-[1000px]">
+                <div class="flex w-full gap-3 items-center max-w-[1000px]">
                     <div class="relative w-full h-full">
                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                             <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none"
@@ -13,115 +13,140 @@
                             </svg>
                         </div>
                         <input type="search" v-model="searchText"
-                            class="block w-full h-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 outline-none"
+                            class="block w-full h-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 outline-none shadow-lg"
                             placeholder="Search Events...">
                     </div>
-                    <Menu as="div" class="relative inlmax-w-7xlmax-w-7xline-block text-left h-full">
-                        <div class="h-full">
-                            <MenuButton
-                                class="w-full h-full justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm font-semibold shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                                <Icon icon="mi:filter" class="text-3xl" />
-                            </MenuButton>
+                    <div>
+                        <div id="filterButton" data-dropdown-placement="bottom-end" data-dropdown-toggle="filterDropdown"
+                            type="button"
+                            class="w-full h-full justify-center gap-x-1.5 text-gray-500 rounded-md px-3 py-2 text-sm font-semibold shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                            <Icon icon="mi:filter" class="text-3xl" />
                         </div>
-                        <transition enter-active-class="transition ease-out duration-100"
-                            enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100"
-                            leave-active-class="transition ease-in duration-75"
-                            leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
-                            <MenuItems
-                                class="absolute right-0 z-10 mt-2 w-fit origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                <div class="py-1">
-                                    <div class="flex flex-col gap-4 p-5">
+                        <div id="filterDropdown" class="z-10 hidden bg-background border-2 border-gray-300 rounded-lg shadow-lg">
+                            <div class="py-1">
+                                <div class="flex flex-col gap-4 p-5 ">
+                                    <Menu as="div" class="relative inline-block text-left">
+                                        <h5 class="field-label text-black">Sort By</h5>
                                         <div>
-                                            <div class="flex items-center mb-4" v-if="props.listKind !== 'saved'">
-                                                <input id="sort-by-location-checkbox" type="checkbox" v-model="sortByLocation"
-                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                                <label for="sort-by-location-checkbox"
-                                                    class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Sort by
-                                                    location</label>
-                                            </div>
-                                            Sort BY
-                                            <br>
-                                            <select name="None" v-model="sortBy">
-                                                <option value="none">None</option>
-                                                <option value="dateAsc">date A</option>
-                                                <option value="dateDesc">date D</option>
-                                                <option value="priceAsc">price A</option>
-                                                <option value="priseDesc">price D</option>
-                                            </select>
+                                            <MenuButton
+                                                class="inline-flex w-full justify-between gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                                                <SortByItem
+                                                    :sortByItem="sortByItems[sortBy] ?? { name: 'Distance', icon: '' }" />
+                                                <ChevronDownIcon class="-mr-1 h-5 w-5 text-gray-400" aria-hidden="true" />
+                                            </MenuButton>
                                         </div>
-                                        <div class="flex flex-col gap-2">
-                                            Price range
-                                            <label for="min-price">Min price</label>
-                                            <input v-model="minPrice" type="number" name="min-price">
-                                            <label for="max-price">Max price</label>
-                                            <input v-model="maxPrice" type="number" name="max-price">
-                                        </div>
-                                        <div class="flex flex-col gap-2">
-                                            Date range
-                                            <label for="min-date">Min date</label>
-                                            <input v-model="minDate" type="date" name="min-date">
-                                            <label for="max-date">Max date</label>
-                                            <input v-model="maxDate" type="date" name="max-date">
-                                        </div>
-                                        <div>
-                                            <button id="dropdownSearchButton" data-dropdown-toggle="dropdownSearch"
-                                                data-dropdown-placement="bottom"
-                                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                type="button">Select city<svg class="w-4 h-4 ml-2" aria-hidden="true"
-                                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M19 9l-7 7-7-7"></path>
-                                                </svg>
-                                            </button>
-                                            <div id="dropdownSearch"
-                                                class="z-10 hidden bg-white rounded-lg shadow w-60 dark:bg-gray-700">
-                                                <div class="p-3">
-                                                    <label for="input-group-search" class="sr-only">Search</label>
-                                                    <div class="relative">
-                                                        <div
-                                                            class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                            <svg class="w-5 h-5 text-gray-500 dark:text-gray-400"
-                                                                aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
-                                                                xmlns="http://www.w3.org/2000/svg">
-                                                                <path fill-rule="evenodd"
-                                                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                                                    clip-rule="evenodd"></path>
-                                                            </svg>
-                                                        </div>
-                                                        <input type="text" id="input-group-search" v-model="citySearchText"
-                                                            class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                                            placeholder="Search city">
+
+                                        <transition enter-active-class="transition ease-out duration-100"
+                                            enter-from-class="transform opacity-0 scale-95"
+                                            enter-to-class="transform opacity-100 scale-100"
+                                            leave-active-class="transition ease-in duration-75"
+                                            leave-from-class="transform opacity-100 scale-100"
+                                            leave-to-class="transform opacity-0 scale-95">
+                                            <MenuItems
+                                                class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                                <div>
+                                                    <MenuItem
+                                                        class="px-3 py-2 hover:bg-gray-200 border-b border-b-gray-200">
+                                                    <div @click="sortByLocation = !sortByLocation">
+                                                        <SortByItem :sortByItem="{ name: 'Distance', icon: '' }" />
                                                     </div>
+                                                    </MenuItem>
+                                                    <MenuItem v-for="sortByItem in Object.entries(sortByItems)"
+                                                        :key="sortByItem[0]"
+                                                        class="px-3 py-2 hover:bg-gray-200 border-b border-b-gray-200">
+                                                    <div @click="sortBy = `${sortByItem[0]}`">
+                                                        <SortByItem :sortByItem="sortByItem[1]" />
+                                                    </div>
+                                                    </MenuItem>
                                                 </div>
-                                                <ul class="h-48 px-3 pb-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200"
-                                                    aria-labelledby="dropdownSearchButton">
-                                                    <li v-for="(city, index) in getCitiesResult?.cities"
-                                                        v-show="!citySearchText || searchedCities[index]" :key="city.id">
-                                                        <div
-                                                            class="flex items-center pl-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                                                            <input :id="city.id" type="checkbox" :value="city.id"
-                                                                v-model="selectedCities"
-                                                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                                            <label :for="city.id"
-                                                                class="w-full py-2 ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">{{
-                                                                    city.name }}</label>
-                                                        </div>
-                                                    </li>
-                                                </ul>
+                                            </MenuItems>
+                                        </transition>
+                                    </Menu>
+                                    <div class="flex flex-col">
+                                        <h5 class="field-label text-black">Price range</h5>
+                                        <div class="flex gap-5">
+                                            <div class="w-40">
+                                                <label for="min-price" class="text-sm">Min price</label>
+                                                <input v-model="minPrice" type="number" name="min-price"
+                                                    class="text-field-sm">
+                                            </div>
+                                            <div class="w-40">
+                                                <label for="max-price" class="text-sm">Max price</label>
+                                                <input v-model="maxPrice" type="number" name="max-price"
+                                                    class="text-field-sm">
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="flex flex-col">
+                                        <h5 class="field-label text-black">Date Range</h5>
+                                        <div class="flex gap-5">
+                                            <div class="w-40">
+                                                <label for="min-date" class="text-sm">Min date</label>
+                                                <input v-model="minDate" type="date" name="min-date" class="text-field-sm">
+                                            </div>
+                                            <div class="w-40">
+                                                <label for="max-date" class="text-sm">Max date</label>
+                                                <input v-model="maxDate" type="date" name="max-date" class="text-field-sm">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button id="dropdownSearchButton" data-dropdown-toggle="dropdownSearch"
+                                            data-dropdown-placement="bottom" class="mt-2 font-medium flex items-center w-full border border-gray-300 p-3 py-2 rounded-md"
+                                            type="button">Select cities<svg class="w-4 h-4 ml-2" aria-hidden="true"
+                                                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 9l-7 7-7-7"></path>
+                                            </svg>
+                                        </button>
+                                        <div id="dropdownSearch"
+                                            class="z-10 hidden bg-white rounded-lg shadow-lg border border-gray-300 dark:bg-gray-700 w-[340px]">
+                                            <div class="p-3">
+                                                <label for="input-group-search" class="sr-only">Search</label>
+                                                <div class="relative">
+                                                    <div
+                                                        class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                        <svg class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                                                            aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                                                            xmlns="http://www.w3.org/2000/svg">
+                                                            <path fill-rule="evenodd"
+                                                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                                                clip-rule="evenodd"></path>
+                                                        </svg>
+                                                    </div>
+                                                    <input type="text" id="input-group-search" v-model="citySearchText"
+                                                        class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                        placeholder="Search city">
+                                                </div>
+                                            </div>
+                                            <ul class="h-48 px-3 pb-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200"
+                                                aria-labelledby="dropdownSearchButton">
+                                                <li v-for="(city, index) in getCitiesResult?.cities"
+                                                    v-show="!citySearchText || searchedCities[index]" :key="city.id">
+                                                    <div
+                                                        class="flex items-center pl-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                                                        <input :id="city.id" type="checkbox" :value="city.id"
+                                                            v-model="selectedCities"
+                                                            class="w-4 h-4 bg-gray-100 border-gray-300 rounded outline-none [accent-color:#A500CE]">
+                                                        <label :for="city.id"
+                                                            class="w-full py-2 ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">{{
+                                                                city.name }}</label>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
-                            </MenuItems>
-                        </transition>
-                    </Menu>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div v-if="events">
                 <div class="flex flex-wrap items-stretch gap-5">
-                    <div v-for="event in events" class="mb-20 w-fit flex justify-center md:w-[47%] 2lg:w-[31%]" :class="{'md:w-[100%] 2lg:w-[48.5%] xl:w-[31.8%]':userStore.isAuthorized}"
-                        :key="event.id">
+                    <div v-for="event in events" class="mb-20 w-fit flex justify-center md:w-[47%] 2lg:w-[31%]"
+                        :class="{ 'md:w-[100%] 2lg:w-[48.5%] xl:w-[31.8%]': userStore.isAuthorized }" :key="event.id">
                         <EventCard :event="event" />
                     </div>
                 </div>
@@ -148,8 +173,10 @@ import { EventPreview } from "~~/graphql/events/event-preview.type";
 import { useUserStore } from "~~/pinia-stores";
 import { initDropdowns } from 'flowbite'
 import { useGeolocation } from '@vueuse/core'
-import { Menu, MenuButton, MenuItems } from '@headlessui/vue'
 import { Icon } from '@iconify/vue';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
+import { ChevronDownIcon } from '@heroicons/vue/20/solid'
+
 type listKindType = "all" | "my" | "saved" | "search" | "location"
 
 const userStore = useUserStore()
@@ -183,6 +210,17 @@ let events = reactive<Array<EventPreview>>([])
 let getEvents: (result: any) => Array<EventPreview>
 let updateQuery: (previousResult: any, fetchMoreResult: any) => {}
 
+// search
+const searchText = ref("")
+watch(searchText, () => {
+    if (searchText.value.length > 2 && props.listKind !== "saved") {
+        queryVars.search = searchText.value
+        setQueries("search")
+    } else {
+        setQueries(props.listKind)
+    }
+})
+
 // sort by location
 watch(coords, () => {
     queryVars.lat = coords.value.latitude
@@ -198,17 +236,6 @@ watch(sortByLocation, () => {
     }
 })
 
-// search
-const searchText = ref("")
-watch(searchText, () => {
-    if (searchText.value.length > 2 && props.listKind !== "saved") {
-        queryVars.search = searchText.value
-        setQueries("search")
-    } else {
-        setQueries(props.listKind)
-    }
-})
-
 // sortBY
 const sortBys = {
     "none": {},
@@ -217,6 +244,26 @@ const sortBys = {
     "priceAsc": { price: "ASC" },
     "priseDesc": { price: "DESC" },
 }
+
+const sortByItems = {
+    "dateAsc": {
+        name: "Date",
+        icon: "mdi:arrow-up-thin"
+    },
+    "dateDesc": {
+        name: "Date",
+        icon: "mdi:arrow-down-thin"
+    },
+    "priceAsc": {
+        name: "Price",
+        icon: "mdi:arrow-up-thin"
+    },
+    "priseDesc": {
+        name: "Price",
+        icon: "mdi:arrow-down-thin"
+    }
+}
+
 const sortBy = ref("none")
 watch(sortBy, (newValue) => {
     if (newValue != "none") {

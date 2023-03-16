@@ -5,7 +5,7 @@
             <h3 class="text-start w-full font-bold text-2xl mb-4">{{ title }}</h3>
             <form @submit.prevent="handleSubmit($event, onSubmit)" class="flex flex-col gap-5 max-full" novalidate>
                 <div>
-                    <label for="title" class="block text-sm font-medium leading-6">Title</label>
+                    <label for="title" class="field-label">Title</label>
                     <div class="mt-2">
                         <Field type="text" name="title" autocomplete="title" class="text-field" />
                         <div class="error-message">
@@ -14,7 +14,7 @@
                     </div>
                 </div>
                 <div>
-                    <label for="description" class="block text-sm font-medium leading-6">Description</label>
+                    <label for="description" class="field-label">Description</label>
                     <div class="mt-2">
                         <Field v-slot="{ field, errors }" name="description">
                             <textarea v-bind="field" name="description" rows="4"
@@ -27,7 +27,7 @@
                 </div>
 
                 <div class="flex flex-col gap-2">
-                    <label for="tags" class="block text-sm font-medium leading-6">
+                    <label for="tags" class="field-label">
                         Tags <span class="text-sm">(put space between each tag)</span>
                     </label>
                     <div class="flex gap-3">
@@ -51,7 +51,7 @@
                     <div class="error-message"></div>
                 </div>
                 <div class="flex flex-col gap-2">
-                    <label for="images" class="block text-sm font-medium leading-6">Images (Star an image to set it as
+                    <label for="images" class="field-label">Images (Star an image to set it as
                         thumbnail)</label>
                     <div class="grid grid-cols-3 gap-6">
                         <EventImagePreview v-for="image, index in selectedImages" :imagesArray="selectedImages"
@@ -63,7 +63,7 @@
                     <div class="error-message"></div>
                 </div>
                 <div class="flex flex-col gap-2">
-                    <label for="date" class="block text-sm font-medium leading-6">
+                    <label for="date" class="field-label">
                         Date
                     </label>
                     <Field id="date" name="date" type="datetime-local" class="text-field" />
@@ -72,7 +72,7 @@
                     </div>
                 </div>
                 <div class="flex flex-col gap-2">
-                    <label for="city" class="block text-sm font-medium leading-6">
+                    <label for="city" class="field-label">
                         City
                     </label>
                     <button id="dropdownSearchButton" data-dropdown-toggle="dropdownSearch" data-dropdown-placement="bottom"
@@ -142,7 +142,7 @@
                     </div>
                 </div>
                 <div class="flex flex-col gap-2">
-                    <label for="specificAddress" class="block text-sm font-medium leading-6">
+                    <label for="specificAddress" class="field-label">
                         Specific Location
                     </label>
                     <Field name="specificAddress" class="text-field" />
