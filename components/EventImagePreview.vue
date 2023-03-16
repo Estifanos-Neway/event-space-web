@@ -1,8 +1,10 @@
 <template>
-    <div class="rounded-lg border">
+    <div class="rounded-lg border overflow-hidden">
         <img class="h-[150px] w-full" :src="imgSrc">
-        <div class="p-3 flex justify-between items-center cupo">
-            <span @click="toggleThumbnail" :class="{ 'text-primary': image.isThumbnail }">Thumbnail</span>
+        <div class="p-3 flex justify-between items-center cupo border-t">
+                <span @click="toggleThumbnail" class="text-2xl" :class="{ 'text-primary': image.isThumbnail }">
+                    <Icon icon="material-symbols:star-rounded" />
+                </span>
             <span @click="deleteImage" class="text-red-600 text-xl cupo">
                 <Icon icon="ph:trash-simple" />
             </span>

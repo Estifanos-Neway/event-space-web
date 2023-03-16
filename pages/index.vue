@@ -1,37 +1,5 @@
 <template>
-    <div class="h-full overflow-auto flex flex-col items-center pt-16 lg:pt-0">
-        <!-- <div class="flex flex-wrap px-8 lg:items-center lg:justify-around">
-            <div class="flex flex-col gap-8 lg:w-[700px] items-center">
-                <div class="flex flex-col gap-3 text-center lg:text-start max-w-[300px]">
-                    <h1 class="font-bold text-4xl lg:text-6xl">
-                        Event <span class="text-primary">Space</span>
-                    </h1>
-                    <p class="text-xl lg:text-2xl">
-                        Proident amet consectetur velit eu officia. Velit sunt adipisicing sit elit. Duis elit proident in est Lorem anim pariatur tempor ad ipsum.
-                    </p>
-                </div>
-                <div class="flex justify-center min-h-[300px] lg:hidden">
-                    <div v-if="result" class="flex justify-center">
-                        <EventCard :event="result.eventsByLocation[0]" />
-                    </div>
-                </div>
-                <div class="flex flex-col gap-5 w-full max-w-[300px]">
-                    <button class="btn">
-                        Explore Events
-                    </button>
-                    <button class="btn bg-primary text-on-primary">
-                        Register Now
-                    </button>
-                </div>
-            </div>
-            <div>
-                <div class="flex justify-center min-h-[300px] max-lg:hidden">
-                    <div v-if="result" class="flex justify-center">
-                        <EventCard :event="result.eventsByLocation[0]" />
-                    </div>
-                </div>
-            </div>
-        </div> -->
+    <div class="h-full overflow-auto flex flex-col items-center">
         <div class="relative bg-white">
             <div class="mx-auto max-w-7xl lg:grid lg:grid-cols-12 lg:gap-x-8 lg:px-8">
                 <div class="px-6 pt-10 pb-24 sm:pb-32 lg:col-span-7 lg:px-0 lg:pt-48 lg:pb-56 xl:col-span-6">
@@ -60,7 +28,7 @@
                 </div>
                 <div class="relative lg:col-span-5 lg:-mr-8 xl:absolute xl:inset-0 xl:left-1/2 xl:mr-0">
                     <img class="aspect-[3/2] w-full bg-gray-50 object-cover lg:absolute lg:inset-0 lg:aspect-auto lg:h-full"
-                        src="https://www.azavista.com/wp-content/uploads/2020/08/event-planning-fails-attendees-hate.jpg"
+                        src="https://panda-events.com/wp-content/uploads/2018/06/events-panda.jpg"
                         alt="" />
                 </div>
             </div>
@@ -69,12 +37,12 @@
             <div class="mx-auto max-w-2xl lg:mx-0 lg:max-w-none">
                 <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">Events For <span class="text-primary">You</span>
                 </h2>
-                <p class="mt-2 text-lg leading-8 ">Here are events from your location
+                <p class="mt-2 text-lg leading-8 ">Here are events around your location
                 </p>
             </div>
-            <div
+            <div v-if="result"
                 class="mx-auto mt-16 grid max-w-2xl auto-rows-fr grid-cols-1 gap-8 sm:mt-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-                <article v-for="event in result?.eventsByLocation" :key="event.id"
+                <article v-for="event in result.eventsByLocation" :key="event.id"
                     class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl bg-gray-900 px-8 pb-8 pt-80 sm:pt-48 lg:pt-80">
                     <img :src="createStaticServerLink(event.images ?? defaultEventImageUrl)" :alt="event.title"
                         class="absolute inset-0 -z-10 h-full w-full object-cover" />
@@ -110,7 +78,7 @@
                         <div class="lg:col-end-1 lg:w-full lg:max-w-lg lg:pb-8">
                             <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">Event <span
                                     class="text-primary">Space</span>?</h2>
-                            <p class="mt-6 text-xl leading-8 ">Quasi est quaerat. Sit molestiae et. Provident
+                            <p class="mt-6 text-xl leading-8 ">Event space is sit molestiae et. Provident
                                 ad dolorem occaecati eos iste. Soluta rerum quidem minus ut molestiae velit error quod.
                                 Excepturi quidem expedita molestias quas.</p>
                             <p class="mt-6 text-base leading-7">Anim aute id magna aliqua ad ad non deserunt
@@ -141,31 +109,31 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="mx-auto max-w-7xl py-24 sm:py-32 w-full">
+                            <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                                Ready to <span class="text-primary">join us?</span>
+                                <br />
+                                Or start by exploring events.
+                            </h2>
+                            <div class="mt-10 flex items-center gap-x-6">
+                                <NuxtLink href="/signup"
+                                    class="rounded-md bg-primary px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ">
+                                    Register Now</NuxtLink>
+                                <NuxtLink href="/events" class="text-sm font-semibold leading-6 text-gray-900">Explore
+                                    events
+                                    <span aria-hidden="true">→</span>
+                                </NuxtLink>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- <footer>
-            <div>
-
-            </div>
-            <div>
-
-            </div>
-        </footer> -->
-        <Footer />
-        <!-- <div v-if="loading">
-            Loading...
+        <div class="w-[85%]">
+            <Footer />
         </div>
-        <div v-else-if="error">
-            Error...
-        </div>
-        <div v-else class="flex gap-14 h-fit justify-center">
-            <div class="flex flex-wrap justify-between w-[70%]">
-                <EventCard v-for="event in result?.eventsByLocation" :key="event.id" :event="event" />
-            </div>
-        </div> -->
     </div>
+    <!-- src="https://panda-events.com/wp-content/uploads/2018/06/events-panda.jpg" -->
 </template>
 
 <script setup lang="ts">
@@ -180,9 +148,9 @@ const userStore = useUserStore()
 if (userStore.isAuthorized) {
     router.replace("/events")
 }
-const { loading, result, onError, error } = useEventsByLocation(0, 3)
+const { result, onError } = useEventsByLocation(0, 3)
 onError(error => {
-    console.error("useEventsByLocation onError", error)
+    console.error("useEventsByLocation-Index onError", error)
 })
 
 onMounted(() => {

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="h-9 w-9 text-2xl cupo">
+        <div class="h-9 w-9 lg:w-11 lg:h-11 text-xl cupo">
             <Avatar :url="userStore.avatarUrl ? createStaticServerLink(userStore.avatarUrl) : ''" :name="userStore.name"
                 id="avatarButton" type="button" data-dropdown-toggle="userDropdown"
                 data-dropdown-placement="bottom-start" />

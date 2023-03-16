@@ -2,10 +2,10 @@
     <div>
 
         <button type="button"
-            class="rounded-md bg-white text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+            class="h-12 w-full rounded-md bg-surface text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
             <label class="block py-2.5 px-3.5 cupo" for="fileSelector">Upload Images</label>
         </button>
-        <input class="invisible" type="file" id="fileSelector" :accept="accept" :multiple="multiple"
+        <input class="hidden h-0" type="file" id="fileSelector" :accept="accept" :multiple="multiple"
             @change="handleSelection">
     </div>
 </template>

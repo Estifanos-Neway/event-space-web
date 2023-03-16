@@ -3,9 +3,16 @@
         <div
             class="bg-background dark:bg-[#444343] text-on-background dark:text-dark-on-background font-default tracking-wider leading-relaxed min-h-screen">
             <div v-show="generalStore.hasNotification"
-                class="fixed w-screen bg-gray-300 dark:bg-gray-300 flex justify-between items-center px-6 h-10 z-50">
+                class="fixed w-screen bg-surface dark:bg-gray-300 flex justify-between items-center px-6 h-16 z-50 border-l-[13px] font-medium"
+                :class="{
+                    'border-error': generalStore.notification.type === 'error',
+                    'border-warning': generalStore.notification.type === 'warning',
+                    'border-success': generalStore.notification.type === 'success',
+                }">
                 {{ generalStore.notification.message }}
-                <span @click="generalStore.clearNotification" class=" cupo">X</span>
+                <span @click="generalStore.clearNotification">
+                    <Icon icon="material-symbols:close-rounded" class="cupo text-2xl" />
+                </span>
             </div>
             <div v-if="!userStore.isAuthorized" class="max-h-screen overflow-hidden">
                 <div id="top-nav-bar" class="fixed h-20 bg-surface transition-transform -translate-y-20">
@@ -15,9 +22,9 @@
                 <nav class="py-5 px-5 md:px-6 md:py-7 lg:px-20 border-b">
                     <div class=" flex flex-wrap items-center justify-between">
                         <Logo />
-                        <button data-collapse-toggle="navbar-solid-bg" type="button"
+                        <button data-collapse-toggle="navbar-solid-bg" aria-controls="navbar-solid-bg" type="button"
                             class="inline-flex items-center p-2 ml-3 text-gray-500 rounded-lg md:hidden"
-                            aria-controls="navbar-solid-bg" aria-expanded="false">
+                            aria-expanded="false">
                             <span class="sr-only">Open main menu</span>
                             <svg class="w-7 h-7" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -30,25 +37,40 @@
                             id="navbar-solid-bg">
                             <ul
                                 class="flex flex-col w-full gap-4 max-md:mt-4 rounded-lg md:flex-row md:justify-end md:items-center md:space-x-8 md:mt-0 md:font-medium md:border-0 md:bg-transparent dark:bg-gray-800 md:dark:bg-transparent dark:border-gray-700">
-                                <li>
-                                    <NuxtLink to="/events" class="flex items-center">
-                                        <Icon icon="material-symbols:chevron-right-rounded md:hidden" class="text-2xl" />
-                                        Events
-                                    </NuxtLink>
-                                </li>
-                                <div class="flex justify-between gap-10 w-full md:max-w-[400px]">
-                                    <li class="btn">
-                                        <NuxtLink to="/signin">Sign In</NuxtLink>
+                                <div class="flex gap-3 flex-col md:flex-row">
+                                    <li>
+                                        <NuxtLink to="/" data-collapse-toggle="navbar-solid-bg"
+                                            aria-controls="navbar-solid-bg" aria-expanded="false"
+                                            class="flex items-center navbar-link">
+                                            <Icon icon="material-symbols:chevron-right-rounded md:hidden"
+                                                class="text-2xl" />
+                                            Home
+                                        </NuxtLink>
                                     </li>
-                                    <li class="btn bg-primary text-on-primary">
-                                        <NuxtLink to="/signup">Sign Up</NuxtLink>
+                                    <li>
+                                        <NuxtLink to="/events" data-collapse-toggle="navbar-solid-bg"
+                                            aria-controls="navbar-solid-bg" aria-expanded="false"
+                                            class="flex items-center navbar-link">
+                                            <Icon icon="material-symbols:chevron-right-rounded md:hidden"
+                                                class="text-2xl" />
+                                            Events
+                                        </NuxtLink>
+                                    </li>
+                                </div>
+                                <div class="flex justify-between gap-10 w-full md:max-w-[300px]">
+                                    <li class="btn p-0">
+                                        <NuxtLink to="/signin" data-collapse-toggle="navbar-solid-bg"
+                                            aria-controls="navbar-solid-bg" aria-expanded="false">Sign In</NuxtLink>
+                                    </li>
+                                    <li class="btn p-0 bg-primary text-on-primary">
+                                        <NuxtLink to="/signup" data-collapse-toggle="navbar-solid-bg"
+                                            aria-controls="navbar-solid-bg" aria-expanded="false">Sign Up</NuxtLink>
                                     </li>
                                 </div>
                             </ul>
                         </div>
                     </div>
                 </nav>
-
                 <div class="h-[90vh]">
                     <slot />
                 </div>
@@ -82,8 +104,7 @@
                     </div>
                 </aside>
                 <div class="max-h-screen overflow-hidden pb-20 md:ml-64 lg:ml-72">
-                    <div class="h-24 flex justify-between items-center px-5 border-b">
-                        <div></div>
+                    <div class="h-24 flex justify-between md:justify-end items-center px-6 md:pr-12 xl:pr-32 border-b">
                         <div class="flex gap-6 md:hidden">
                             <button data-drawer-target="default-sidebar" data-drawer-toggle="default-sidebar"
                                 aria-controls="default-sidebar" type="button"
@@ -98,7 +119,7 @@
                             </button>
                             <Logo />
                         </div>
-                        <div class="flex items-center gap-6">
+                        <div class="flex items-center">
                             <Profile />
                             <!-- <div class="w-0.5 h-8 rounded-lg bg-gray-300">
                             </div>
@@ -126,6 +147,7 @@ const userStore = useUserStore()
 const { getToken } = useApollo()
 
 onMounted(() => {
+    generalStore.clearNotification()
     initDropdowns()
     initDrawers()
     initCollapses()
@@ -157,7 +179,7 @@ const sideBarLinks = [
     },
     {
         link: "/events/my",
-        text: "Your Events"
+        text: "My Events"
     },
     {
         link: "/events/saved",

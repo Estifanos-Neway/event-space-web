@@ -18,7 +18,10 @@ export default <Partial<Config>>{
         background: "#FFFFFF",
         surface: "#ECECEC",
         error: "#CE0000",
+        warning: "#d1ab41",
+        success: "#41d167",
         thin_gray: "#BFBFBF",
+        disabled:"#e0a3e3",
         on: {
           primary: "#EBEBEB",
           secondary: "",
@@ -38,7 +41,10 @@ export default <Partial<Config>>{
       fontFamily: {
         default: "Montserrat",
         logo: "Rajdhani"
-      }
+      },
+      screens: {
+        '2lg': '1100px'
+      },
     },
   },
   plugins: [

@@ -1,5 +1,5 @@
 <template>
-    <EventListing listKind="all" />
+    <EventListing title="Explore all events" listKind="all" />
 </template>
 
 <script setup lang="ts">

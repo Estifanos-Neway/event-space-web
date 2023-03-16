@@ -1,8 +1,7 @@
 <template>
     <div class="h-full overflow-auto">
-        <h3>Create New Event</h3>
-        <br>
-        <EventComposer :getId="getId" :submitter="submitter" />
+        <EventComposer :getId="getId" :submitter="submitter" title="Create new event" />
+        <Footer />
     </div>
 </template>
 

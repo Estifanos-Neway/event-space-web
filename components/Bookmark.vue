@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div v-if="isPreview" class="flex gap-2 items-center">
-            <div class="text-3xl" @click.stop="toggleBookmark" :class="{ 'text-blue-800': adding || dropping }">
+        <div v-if="isPreview" class="flex gap-2 items-center" :class="{ 'animate-pulse': adding || dropping }">
+            <div class="text-3xl" @click.stop="toggleBookmark">
                 <span v-if="thisEvent.bookmarked_by_user">
                     <Icon icon="material-symbols:bookmark-rounded" />
                 </span>
@@ -11,11 +11,11 @@
             </div>
             <span class="text-2xl">{{ thisEvent.bookmarks_count }}</span>
         </div>
-        <div v-else>
+        <div v-else :class="{ 'animate-pulse': adding || dropping }">
             <p>{{ thisEvent.bookmarks_count }} Bookmarks</p>
             <div class="flex gap-4 items-center border-2 w-fit p-1 pr-3 border-gray-500 rounded-md cupo"
-                @click.stop="toggleBookmark" :class="{ 'text-blue-800': adding || dropping }">
-                <div class="text-3xl">
+                @click.stop="toggleBookmark" :class="{ 'text-gray-300': adding || dropping }">
+                <div class="text-3xl text-gray-100">
                     <span v-if="thisEvent.bookmarked_by_user">
                         <Icon icon="material-symbols:bookmark-rounded" />
                     </span>

@@ -6,7 +6,7 @@
         </div>
         <div v-else class="w-full h-full">
             <div
-                :class="`relative w-full h-full font-bold flex justify items-center justify-center overflow-hidden bg-gray-200 rounded-full dark:bg-gray-600`">
+                :class="`relative w-full h-full font-bold flex justify items-center justify-center overflow-hidden bg-gray-200 rounded-full dark:bg-gray-600 ring-1 ring-gray-500`">
                 {{ name?.[0]?.toUpperCase() }}
             </div>
         </div>

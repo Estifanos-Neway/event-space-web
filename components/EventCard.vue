@@ -1,10 +1,8 @@
 <template>
-    <div @click="router.push(`/events/${event.id}`)" class="border-2 border-gray-300 w-[85%] sm:w-[75%] md:w-[65%] lg:w-[400px] cupo rounded-xl overflow-hidden">
-        <div class="h-52">
-            <img v-if="event.images" :src="createStaticServerLink(event.images)" class="w-full h-full object-cover " />
-            <div v-else class="w-full h-full bg-gray-800">
-
-            </div>
+    <div @click="router.push(`/events/${event.id}`)"
+        class="border-2 border-gray-300 w-[100%] cupo rounded-xl overflow-hidden">
+        <div class="h-52" :class="{'border-b':!event.images}">
+            <img :src="createStaticServerLink(event.images ?? defaultEventImageUrl)" :alt="event.title" class="w-full h-full object-cover " />
         </div>
         <div class="flex flex-col px-5 py-8 gap-8">
             <div class="flex flex-col gap-3">
@@ -31,7 +29,6 @@
                     </div>
                 </div>
             </div>
-            
             <div class="flex flex-col gap-2">
                 <div class="flex justify-between px-1">
                     <span class="font-bold text-xl">
@@ -54,6 +51,7 @@
 import { EventPreview } from "@/graphql/events/event-preview.type"
 import { Icon } from '@iconify/vue';
 import { createStaticServerLink } from "~~/commons/functions";
+import { defaultEventImageUrl } from "~~/commons/variables";
 
 const router = useRouter()
 const descriptionPreviewLength: number = 90
