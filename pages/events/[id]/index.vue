@@ -41,7 +41,15 @@
                         <div>
                             <p class="font-semibold">Organized BY</p>
                             <div class="flex justify-between items-end mb-2">
-                                <p class="font-semibold text-primary">{{ result.eventsByPk.user.name }}</p>
+                                <div>
+                                    <div :user="userStore" id="userDropdownInEvent" class="z-10 hidden">
+                                        <ProfileCard :editable="false" :user="userStore" />
+                                    </div>
+                                    <p class="font-semibold text-primary" data-dropdown-toggle="userDropdownInEvent"
+                                        data-dropdown-placement="bottom-start">
+                                        <snap class="cupo">{{ result.eventsByPk.user.name }}</snap>
+                                    </p>
+                                </div>
                                 <p class="whitespace-nowrap"><span class="font-bold">{{
                                     result.eventsByPk.user.followersCount
                                 }}</span> Followers </p>
@@ -49,17 +57,8 @@
                             <Follow :event="result.eventsByPk" />
                         </div>
                     </div>
-                    <!-- <div>
-                        <div class="h-9 w-9 lg:w-11 lg:h-11 text-xl cupo">
-                            <Avatar :url="userStore.avatarUrl ? createStaticServerLink(userStore.avatarUrl) : ''"
-                                :name="userStore.name" id="avatarButton" type="button" data-dropdown-toggle="userDropdown"
-                                data-dropdown-placement="bottom-start" />
-                        </div>
-                        <div :user="userStore" id="userDropdown" class="z-10 hidden">
-                            <ProfileCard :user="userStore" />
-                        </div>
-                    </div>
-                    <div className=' flex justify-center items-center'>
+
+                    <!-- <div className=' flex justify-center items-center'>
                         <div className='group text-xl'>
                             <strong className='group-hover:text-red-500'>Hover on me </strong>
                             <strong className='group-hover:text-green-500'>the texts will be </strong>
@@ -128,7 +127,15 @@
                     <div>
                         <p class="font-semibold">Organized BY</p>
                         <div class="flex justify-between items-end mb-2">
-                            <p class="font-semibold text-primary">{{ result.eventsByPk.user.name }}</p>
+                            <div>
+                                <div :user="userStore" id="userDropdownInEvent2" class="z-10 hidden">
+                                    <ProfileCard :editable="false" :user="userStore" />
+                                </div>
+                                <p class="font-semibold text-primary" data-dropdown-toggle="userDropdownInEvent2"
+                                    data-dropdown-placement="bottom-start">
+                                    <snap class="cupo">{{ result.eventsByPk.user.name }}</snap>
+                                </p>
+                            </div>
                             <p class="whitespace-nowrap"><span class="font-bold">{{
                                 result.eventsByPk.user.followersCount
                             }}</span> Followers </p>
