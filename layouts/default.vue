@@ -3,7 +3,7 @@
         <div
             class="bg-background dark:bg-[#444343] text-on-background dark:text-dark-on-background font-default tracking-wider leading-relaxed min-h-screen">
             <div v-show="generalStore.hasNotification"
-                class="fixed w-screen bg-surface dark:bg-gray-300 flex justify-between items-center px-6 h-16 z-40 border-l-[13px] font-medium"
+                class="fixed w-screen bg-surface dark:bg-gray-300 flex justify-between items-center px-6 h-16 z-50 border-l-[13px] font-medium"
                 :class="{
                     'border-error': generalStore.notification.type === 'error',
                     'border-warning': generalStore.notification.type === 'warning',
@@ -77,7 +77,7 @@
             </div>
             <div v-else class="max-h-screen">
                 <aside id="default-sidebar"
-                    class="fixed top-0 left-0 z-30 w-64 lg:w-72 bg-surface dark:bg-dark-surface h-screen transition-transform -translate-x-full md:translate-x-0"
+                    class="fixed top-0 left-0 z-40 w-64 lg:w-72 bg-surface dark:bg-dark-surface h-screen transition-transform -translate-x-full md:translate-x-0"
                     aria-label="Sidebar">
                     <div
                         class="h-full pb-12 overflow-hidden bg-surface dark:bg-dark-surface flex flex-col justify-between items-center">
@@ -108,7 +108,7 @@
                         <div class="flex gap-6 md:hidden">
                             <button data-drawer-target="default-sidebar" data-drawer-toggle="default-sidebar"
                                 aria-controls="default-sidebar" type="button"
-                                class="inline-flex items-center text-xl md:hidden hover:bg-gray-100 outline-none">
+                                class="inline-flex items-center text-xl md:hidden  outline-none">
                                 <span class="sr-only">Open sidebar</span>
                                 <svg class="w-9 h-9" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
                                     xmlns="http://www.w3.org/2000/svg">

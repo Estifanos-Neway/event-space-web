@@ -20,3 +20,10 @@ export function getFileExtension(fileName: string) {
 export function createStaticServerLink(path: string) {
     return staticServerBaseUrl + path
 }
+
+export function getFullFormattedDate(dateString: string) {
+    return new Date(dateString).toLocaleString([], {
+        year: 'numeric', month: 'numeric', day: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+    })
+}

@@ -1,26 +1,22 @@
 <template>
-    <div class="h-full overflow-scroll p-5">
-        <div v-if="loading">
-            Loading...
-        </div>
-        <div v-else-if="error">
-            Error
-        </div>
-        <div v-else class="p-4 flex flex-col gap-5">
-            <div v-for="ticketsAndEvents in ticketsByEvent" class="bg-gray-400 flex flex-col p-4 gap-5" :key="ticketsAndEvents.event?.id">
-                <div class="font-bold">
-                    <NuxtLink :to="`/events/${ticketsAndEvents.event?.id}`"> {{ ticketsAndEvents.event?.title }}</NuxtLink>
-                </div>
-                <hr>
-                <div class="flex flex-col gap-3">
-                    <div v-for="ticket in ticketsAndEvents.tickets" :key="ticket.id">
-                        <span class="font-bold">{{ ticket.id }}</span>
-                        <br>
-                        {{ ticket.createdAt }} ( {{ ticket.isValid }})
-                    </div>
+    <div class="min-h-full h-full overflow-auto flex flex-col items-center justify-between">
+        <div class="p-9 max-w-[650px] xl:max-w-[1000px]">
+            <div class="w-full">
+                <h3 class="text-start w-full font-bold text-2xl mb-4 pl-1 ">Your Tickets</h3>
+            </div>
+            <div v-if="ticketsResult" class="flex flex-col gap-12 w-fit ">
+                <div v-for="ticket in ticketsResult?.me.tickets" :key="ticket.id" >
+                    <TicketCard :ticket="ticket" />
                 </div>
             </div>
+            <div v-else-if="loadingTickets">
+                Loading...
+            </div>
+            <div v-else-if="ticketsError">
+                Error <span @click="refetchTickets">Try again</span>
+            </div>
         </div>
+        <Footer />
     </div>
 </template>
 
@@ -29,10 +25,9 @@ import { EventPreview } from "~~/graphql/events/event-preview.type";
 import { MyTicketsRes } from "~~/graphql/tickets/ticket.query.types";
 import { myTicketsQuery } from "../graphql/tickets"
 import { Ticket } from "../graphql/tickets/ticket.type"
-import { initAccordions } from 'flowbite'
 type organizedEvent = Array<{ event?: EventPreview, tickets?: Array<Ticket> }>
 
-const { loading, onResult, onError, error, } = useQuery<MyTicketsRes, {}>(
+const { result: ticketsResult, loading: loadingTickets, onError: onTicketsError, error: ticketsError, refetch: refetchTickets } = useQuery<MyTicketsRes, {}>(
     myTicketsQuery,
     {},
     {
@@ -40,26 +35,7 @@ const { loading, onResult, onError, error, } = useQuery<MyTicketsRes, {}>(
     }
 )
 let ticketsByEvent: globalThis.Ref<organizedEvent> = ref([])
-onResult(result => {
-    const tempTicketsByEvent: organizedEvent = []
-    const eventIds: Array<string> = []
-    result.data.me.tickets.forEach(ticket => {
-        const eventId = ticket.event.id
-        const index = eventIds.indexOf(eventId)
-        const newTicket = { ...ticket, event: {} as EventPreview }
-        if (index !== -1) {
-            tempTicketsByEvent[index].tickets!.push(newTicket)
-        } else {
-            eventIds.push(eventId)
-            tempTicketsByEvent.push({ event: ticket.event, tickets: [newTicket] })
-        }
-    })
-    ticketsByEvent.value = [...tempTicketsByEvent]
-})
-onError(error => {
+onTicketsError(error => {
     console.error("MyTicketsRes onError", error)
-})
-onMounted(() => {
-    initAccordions()
 })
 </script>

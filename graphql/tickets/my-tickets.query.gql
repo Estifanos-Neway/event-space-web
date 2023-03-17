@@ -2,7 +2,7 @@
 
 query myTickets {
   me {
-    tickets {
+    tickets(orderBy: { createdAt: DESC }) {
       event {
         ...eventPreviewFields
       }

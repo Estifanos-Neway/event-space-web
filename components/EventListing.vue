@@ -1,6 +1,6 @@
 <template>
     <div @scroll="handleScroll" ref="scrollingList" class="h-full overflow-auto p-5 pt-16 flex flex-col items-center">
-        <div class="w-[95%] max-w-[1400px] flex flex-col  gap-12 items-start">
+        <div class="min-h-full w-[95%] max-w-[1400px] flex flex-col  gap-12 items-start justify-between">
             <div class="w-full">
                 <h3 class="text-start w-full font-bold text-2xl mb-4">{{ title }}</h3>
                 <div class="flex w-full gap-3 items-center max-w-[1000px]">
@@ -19,11 +19,12 @@
                     <div>
                         <div id="filterButton" data-dropdown-placement="bottom-end" data-dropdown-toggle="filterDropdown"
                             type="button"
-                            class="w-full h-full justify-center gap-x-1.5 text-gray-500 rounded-md px-3 py-2 text-sm font-semibold shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                            class="w-full h-full justify-center gap-x-1.5 text-gray-500 border bg-gray-50 border-gray-200 rounded-md px-3 py-[9.5px] text-sm font-semibold shadow-md hover:bg-gray-100">
                             <Icon icon="mi:filter" class="text-3xl" />
                         </div>
-                        <div id="filterDropdown" class="z-10 hidden bg-background border-2 border-gray-300 rounded-lg shadow-lg">
-                            <div class="py-1">
+                        <div id="filterDropdown"
+                            class="z-10 hidden bg-background border-2 border-gray-300 rounded-lg shadow-lg">
+                            <div class="py-1">bg-gray-50
                                 <div class="flex flex-col gap-4 p-5 ">
                                     <Menu as="div" class="relative inline-block text-left">
                                         <h5 class="field-label text-black">Sort By</h5>
@@ -92,7 +93,8 @@
                                     </div>
                                     <div>
                                         <button id="dropdownSearchButton" data-dropdown-toggle="dropdownSearch"
-                                            data-dropdown-placement="bottom" class="mt-2 font-medium flex items-center w-full border border-gray-300 p-3 py-2 rounded-md"
+                                            data-dropdown-placement="bottom"
+                                            class="mt-2 font-medium flex items-center w-full border border-gray-300 p-3 py-2 rounded-md"
                                             type="button">Select cities<svg class="w-4 h-4 ml-2" aria-hidden="true"
                                                 fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                                 xmlns="http://www.w3.org/2000/svg">
@@ -144,6 +146,12 @@
                 </div>
             </div>
             <div v-if="events">
+                <!-- <div class="flex flex-wrap items-stretch gap-5">
+                    <div v-for="event in events" class="mb-20 w-fit flex justify-center md:w-[47%] 2lg:w-[31%]"
+                        :class="{ 'md:w-[100%] 2lg:w-[48.5%] xl:w-[31.8%]': userStore.isAuthorized }" :key="event.id">
+                        <EventCard :event="event" />
+                    </div>
+                </div> -->
                 <div class="flex flex-wrap items-stretch gap-5">
                     <div v-for="event in events" class="mb-20 w-fit flex justify-center md:w-[47%] 2lg:w-[31%]"
                         :class="{ 'md:w-[100%] 2lg:w-[48.5%] xl:w-[31.8%]': userStore.isAuthorized }" :key="event.id">

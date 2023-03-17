@@ -5,13 +5,13 @@
             Buy Ticket
         </div>
         <div @click.stop="() => { }">
-            <TransitionRoot as="template" :show="open">
-                <Dialog as="div" class="relative z-10" @close="open = false">
+            <TransitionRoot as="template" :show="isPopupOpen">
+                <Dialog as="div" class="relative z-[60]" @close="isPopupOpen = false">
                     <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0"
                         enter-to="opacity-100" leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
-                        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                        <div class="fixed inset-0 bg-black bg-opacity-75 transition-opacity" />
                     </TransitionChild>
-                    <div class="fixed inset-0 z-10 overflow-y-auto">
+                    <div class="fixed inset-0 z-[60] overflow-y-auto">
                         <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                             <TransitionChild as="template" enter="ease-out duration-300"
                                 enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
@@ -19,34 +19,46 @@
                                 leave-from="opacity-100 translate-y-0 sm:scale-100"
                                 leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
                                 <DialogPanel
-                                    class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+                                    class="relative max-w-[400px] transform overflow-hidden rounded-lg bg-surface px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
                                     <div v-if="ticketAdded">
-                                        Success
+                                        <span class="font-bold text-lg">Congratulations, You have successfully bought a ticket!</span>
                                         <div class="mt-5 sm:mt-6">
-                                            <button type="button"
-                                                class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                                @click="open = false">Okay</button>
+                                            <button type="button" class="ticket-sell-dialog-btn cupo"
+                                                @click="resetTicket">Okay</button>
                                         </div>
                                     </div>
-                                    <div v-else-if="error">
-                                        Error
+                                    <div v-else-if="ticketError">
+                                        <span class="text-error">Sorry,somethings went wrong and we couldn't process your
+                                            request, please try again.</span>
                                         <div class="mt-5 sm:mt-6">
-                                            <button type="button"
-                                                class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                                @click="open = false">Close</button>
+                                            <button type="button" class="ticket-sell-dialog-btn cupo"
+                                                @click="resetTicket">Close</button>
                                         </div>
                                     </div>
-                                    <div v-else>
-                                        <h3>
-                                            {{ event.title }}
-                                        </h3>
-                                        <br>
-                                        {{ event.price }}
+                                    <div v-else class="text-on-surface">
+                                        <img :src="createStaticServerLink(event.images)"
+                                            class="h-[250px] w-full rounded-md object-cover mb-1" />
+                                        <div class="ml-0.5">
+                                            <h3 class="text-lg font-bold">
+                                                {{ event.title }}
+                                            </h3>
+                                            <div class="py-2">
+                                                <div class="flex gap-2 items-center">
+                                                    <Icon icon="material-symbols:date-range" class="text-primary text-xl" />
+                                                    <span>{{ getFullFormattedDate(event.date) }}</span>
+                                                </div>
+                                                <div class="flex gap-2 items-center">
+                                                    <Icon icon="mdi:map-marker" class="text-primary text-xl" />
+                                                    <span>{{ event.city ? event.city.name : "City not specified!" }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="mt-5 sm:mt-6">
                                             <button type="button" @click="buyTicket"
-                                                class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                                :class="{ 'disabled bg-indigo-500': adding }">Buy
-                                                Now</button>
+                                                class="ticket-sell-dialog-btn cupo outline-none"
+                                                :class="{ 'disabled bg-indigo-500': adding }">
+                                                Pay <span class="font-bold">{{ event.price }} ETB</span>
+                                            </button>
                                         </div>
                                     </div>
                                 </DialogPanel>
@@ -65,8 +77,9 @@ import { initModals } from 'flowbite'
 import { ref } from 'vue'
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { useUserStore } from '~~/pinia-stores';
-
-const open = ref(false)
+import { createStaticServerLink, getFullFormattedDate } from '~~/commons/functions';
+import { Icon } from '@iconify/vue';
+const isPopupOpen = ref(false)
 const props = defineProps<{
     event: EventPreview
 }>()
@@ -74,7 +87,7 @@ const props = defineProps<{
 const userStore = useUserStore()
 const router = useRouter()
 const ticketAdded = ref(false)
-const { mutate: add, onDone: onAddDone, onError: onAddError, loading: adding, error } = addTicket()
+const { mutate: add, onDone: onAddDone, onError: onAddError, loading: adding, error: ticketError } = addTicket()
 onAddDone(() => {
     ticketAdded.value = true
 })
@@ -86,7 +99,7 @@ function handleBuyClick() {
     if (!userStore.isAuthorized) {
         router.push("/signin")
     } else {
-        open.value = true
+        isPopupOpen.value = true
     }
 
 }
@@ -94,8 +107,20 @@ function buyTicket() {
     if (adding.value) return
     add({ eventId: props.event.id })
 }
-
+function resetTicket() {
+    isPopupOpen.value = false
+    setTimeout(() => {
+        ticketAdded.value = false
+        ticketError.value = null
+    }, 1000)
+}
 onMounted(() => {
     initModals()
 })
 </script>
+
+<style>
+.ticket-sell-dialog-btn {
+    @apply bg-primary text-on-primary border-2 p-3 rounded-lg w-full text-center
+}
+</style>

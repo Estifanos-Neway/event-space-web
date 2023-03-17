@@ -2,7 +2,7 @@ export type EventPreview = {
     id: string
     title: string
     description: string
-    date: Date
+    date: string
     bookmarks_count: number
     images: string
     city: {

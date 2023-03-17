@@ -18,10 +18,7 @@
                 <div class="flex flex-col gap-1">
                     <div class="flex gap-2 items-center">
                         <Icon icon="material-symbols:date-range" class="text-primary text-2xl" />
-                        <span>{{ new Date(event.date).toLocaleString([], {
-                            year: 'numeric', month: 'numeric', day: 'numeric',
-                            hour: '2-digit', minute: '2-digit'
-                        }) }}</span>
+                        <span>{{ getFullFormattedDate(event.date) }}</span>
                     </div>
                     <div class="flex gap-2 items-center" v-if="event.city?.name">
                         <Icon icon="mdi:map-marker" class="text-primary text-2xl" />
@@ -50,7 +47,7 @@
 <script setup lang="ts">
 import { EventPreview } from "@/graphql/events/event-preview.type"
 import { Icon } from '@iconify/vue';
-import { createStaticServerLink } from "~~/commons/functions";
+import { createStaticServerLink, getFullFormattedDate } from "~~/commons/functions";
 import { defaultEventImageUrl } from "~~/commons/variables";
 
 const router = useRouter()
