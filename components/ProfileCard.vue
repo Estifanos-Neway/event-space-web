@@ -1,93 +1,108 @@
 <template>
-    <div>
-        <div
-            class="bg-white p-4 divide-y divide-gray-100 rounded-lg shadow w-[550px] dark:bg-gray-700 dark:divide-gray-600">
-            <div class="flex gap-2 justify-around">
-                <div class="w-24 h-24 text-5xl flex-shrink-0">
+    <div class="z-50 bg-white border-2 space-y-4 border-gray-300 p-7 divide-gray-100 rounded-lg shadow max-w-[400px] lg:max-w-[650px] dark:bg-gray-700 dark:divide-gray-600 overflow-hidden"
+        :class="{ 'pb-3': editable }">
+        <div class="flex flex-col lg:flex-row gap-2 justify-around">
+            <div class="w-24 h-24 rounded-full overflow-hidden flex-shrink-0">
+                <div class="w-24 h-24 text-5xl absolute">
                     <Avatar :url="user.avatarUrl ? createStaticServerLink(user.avatarUrl) : ''" :name="user.name"
-                        id="avatar" data-dropdown-toggle="dropdown"
-                        :class="{ 'animate-pulse': uploadingAvatarUrl || deletingAvatarUrl }" class="cupo" />
-                    <div id="dropdown"
-                        class="z-10 hidden border bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="avatar">
-                            <li>
-                                <label for="avatar-selector"
-                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cupo">
-                                    Upload Image</label>
-                            </li>
-                            <li v-if="user.avatarUrl">
-                                <div @click="deleteAvatarUrl"
-                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-red-500">
-                                    Delete</div>
-                            </li>
-                        </ul>
-                    </div>
-                    <input class="invisible" type="file" id="avatar-selector" accept="image/*" @change="uploadAvatar"
-                        :disabled="uploadingAvatarUrl || deletingAvatarUrl" />
-                </div>
-                <div class="flex flex-col gap-3">
-                    <div class="flex flex-col gap-2">
-                        <div>
-                            <div v-show="editingName">
-                                <div class="flex flex-col">
-                                    <input type="text" ref="nameInputField" v-model="name" @focusout="resetName"
-                                        @keyup="saveNameOnEnter" class="outline-none">
-                                    <button @click="saveName" :class="{ 'text-gray-500': updatingName }">
-                                        save
-                                    </button>
-                                </div>
-                            </div>
-                            <h4 v-if="!editingName" class="font-bold" @click="startNameEdit">
-                                {{ user.name }}
-                            </h4>
-                        </div>
-                        <div>
-                            <div v-show="editingDescription">
-                                <div class="flex flex-col">
-                                    <textarea ref="descriptionInputField" rows="5" cols="38" v-model="description"
-                                        @focusout="resetDescription" class="outline-none"></textarea>
-                                    <button @click="saveDescription" :class="{ 'text-gray-500': updatingDescription }">
-                                        save
-                                    </button>
-                                </div>
-                            </div>
-                            <div v-if="!editingDescription" @click="startDescriptionEdit">
-                                <p v-if="user.description">
-                                    {{ user.description }}
-                                </p>
-                                <p v-else class="font-thin">
-                                    No description. Click here to add description
-                                </p>
-                            </div>
+                        id="avatar" :class="{ 'animate-pulse': uploadingAvatarUrl || deletingAvatarUrl }" />
+                    <div v-if="editable"
+                        class="flex justify-center items-end absolute w-full overflow-hidden h-full bottom-0 rounded-full">
+                        <div data-dropdown-toggle="dropdown"
+                            class="bg-gray-300 bg-opacity-90 w-full flex justify-center py-0.5 pl-0.5 bg-gradient-to-b cupo">
+                            <Icon :icon="editOutline" class="text-xl text-primary" />
                         </div>
                     </div>
-                    <span>
-                        {{ user.email }}
-                    </span>
                 </div>
+                <div id="dropdown"
+                    class="z-10 hidden border bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="avatar">
+                        <li>
+                            <label for="avatar-selector"
+                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cupo">
+                                Upload Image</label>
+                        </li>
+                        <li v-if="user.avatarUrl">
+                            <div @click="deleteAvatarUrl"
+                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-red-500 cupo">
+                                Delete</div>
+                        </li>
+                    </ul>
+                </div>
+                <input class="invisible" type="file" id="avatar-selector" accept="image/*" @change="uploadAvatar"
+                    :disabled="uploadingAvatarUrl || deletingAvatarUrl" />
             </div>
-            <div class="flex justify-around">
-                <div class="flex flex-col items-center">
-                    <h2>
-                        {{ user.followersCount }}
-                    </h2>
-                    <h2>
-                        followers
-                    </h2>
+            <div class="flex flex-col gap-2 pl-2 lg:pt-2 lg:pl-4">
+                <div class="flex flex-col">
+                    <form @submit.prevent="saveName">
+                        <div v-show="editingName" class="w-full">
+                            <div class="flex gap-2 border-b-2 mb-2">
+                                <input type="text" ref="nameInputField" v-model="name" @focusout="resetName"
+                                    class="outline-none w-full font-bold">
+                                <Icon icon="ic:round-done" class="text-3xl text-primary cupo"
+                                    :class="{ 'text-disabled': updatingName }" @click="saveName" />
+                            </div>
+                        </div>
+                        <p v-if="!editingName" class="font-bold">
+                            {{ user.name }}
+                            <Icon v-if="editable" :icon="editOutline"
+                                class="ml-2 text-xl text-primary mb-2 inline-flex cupo" @click="startNameEdit" />
+                        </p>
+                    </form>
+                    <form @submit.prevent="saveDescription">
+                        <div v-show="editingDescription">
+                            <div class="flex flex-col">
+                                <textarea ref="descriptionInputField" rows="5" cols="38" v-model="description"
+                                    @focusout="resetDescription" class="outline-none border-y-2"></textarea>
+                            </div>
+                            <Icon icon="ic:round-done" class="text-3xl text-primary cupo"
+                                :class="{ 'text-disabled': updatingDescription }" @click="saveDescription" />
+                        </div>
+                        <div v-if="!editingDescription">
+                            <p>
+                                <span v-if="user.description">
+                                    {{ user.description }}
+                                </span>
+                                <span v-else class="font-light">
+                                    No description
+                                </span>
+                                <Icon v-if="editable && !editingDescription" :icon="editOutline"
+                                    class="ml-2 text-xl text-primary mb-2 inline-flex cupo" @click="startDescriptionEdit" />
+                            </p>
+                        </div>
+                    </form>
                 </div>
                 <div>
-                    <h2>
-                        {{ user.followingCount }}
-                    </h2>
-                    <h2>
-                        following
-                    </h2>
+                    <b>Email: </b>
+                    <a :href="`mailto:${user.email}`" class="text-primary font-bold">
+                        {{ user.email }}
+                    </a>
                 </div>
             </div>
+        </div>
+        <div class="bg-gray-200 h-0.5 rounded-full"></div>
+        <div class="grid grid-cols-2 pl-2 lg:pl-5">
+            <div class="flex flex-col">
+                <b>
+                    {{ user.followersCount }}
+                </b>
+                <h2>
+                    Followers
+                </h2>
+            </div>
             <div>
-                <div @click="useUserSignOut" class="cupo text-center">
-                    Log Out
-                </div>
+                <b>
+                    {{ user.followingCount }}
+                </b>
+                <h2>
+                    Following
+                </h2>
+            </div>
+        </div>
+        <div class="bg-gray-200 h-0.5 rounded-full"></div>
+        <div v-if="editable">
+            <div @click="useUserSignOut" class="cupo text-center lg:pr-14 font-bold text-primary">
+                Log Out
             </div>
         </div>
     </div>
@@ -102,13 +117,20 @@ import { initDropdowns } from 'flowbite';
 import { fileToBase64, getFileExtension, createStaticServerLink } from '~~/commons/functions';
 import { UploadFileMutationRes, UploadFileMutationVars } from '~~/graphql/files/upload-file.mutation.types';
 import { uploadFileMutation } from '~~/graphql/files';
+import { Icon } from '@iconify/vue';
+import editOutline from '@iconify-icons/material-symbols/edit-outline';
 
 const generalStore = useGeneralStore()
-const props = defineProps<
+const props = withDefaults(defineProps<
     {
-        user: User
+        user: User,
+        editable: boolean
     }
->()
+>(),
+    {
+        editable: true
+    }
+)
 
 // editing name
 const nameInputField = ref<HTMLInputElement | null>(null)
@@ -143,6 +165,7 @@ function finishUpdatingName() {
     updatingName.value = false
 }
 function saveName() {
+    console.log("here")
     if (updatingName.value) return
     const newName = name.value.trim();
     if (newName !== "" && newName !== props.user.name) {

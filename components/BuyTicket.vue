@@ -1,7 +1,7 @@
 <template>
     <div>
         <div @click.stop="handleBuyClick"
-            class="border-2 p-2 rounded-lg cupo bg-primary text-on-primary w-full text-center">
+            class="p-2 rounded-lg cupo bg-primary text-on-primary w-full text-center font-medium">
             Buy Ticket
         </div>
         <div @click.stop="() => { }">

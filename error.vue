@@ -13,7 +13,7 @@
                 <NuxtLink to="/">
                     <span class="text-primary flex items-center text-lg gap-1">
                         <Icon icon="gg:arrow-left" />
-                        <span>Go Home</span>
+                        <span>Home</span>
                     </span>
                 </NuxtLink>
             </div>

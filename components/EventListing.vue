@@ -13,7 +13,7 @@
                             </svg>
                         </div>
                         <input type="search" v-model="searchText"
-                            class="block w-full h-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 outline-none shadow-lg"
+                            class="block w-full h-full p-4 pl-10 text-sm text-gray-900 border border-gray-200 rounded-lg bg-gray-50 outline-none shadow-md"
                             placeholder="Search Events...">
                     </div>
                     <div>

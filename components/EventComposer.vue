@@ -60,7 +60,9 @@
                     <div>
                         <FileSelector fieldName="images" accept="image/*" :selectedFiles="getSelectedImagesRef()" />
                     </div>
-                    <div class="error-message"></div>
+                    <div class="error-message">
+                        <div v-if="imageError">{{ imageError }}</div>
+                    </div>
                 </div>
                 <div class="flex flex-col gap-2">
                     <label for="date" class="field-label">
@@ -238,6 +240,7 @@ watch(citySearchText, () => {
 })
 
 // images
+const imageError = ref("")
 const convertedOldImages: SelectedImage[] = (props.oldEvent?.images ?? []).map(
     (image, index) => (
         {
@@ -248,12 +251,19 @@ const convertedOldImages: SelectedImage[] = (props.oldEvent?.images ?? []).map(
         }
     )
 )
-// const oldImages = ref<SelectedImage[]>(convertedOldImages)
 const selectedImages = ref<SelectedImage[]>([...convertedOldImages])
 function getSelectedImagesRef(): globalThis.Ref<SelectedImage[]> {
     return selectedImages
 }
-
+watch(selectedImages, () => {
+    if (selectedImages.value.length === 0) {
+        imageError.value = "At least one image is required"
+    } else {
+        imageError.value = ""
+    }
+},
+    { deep: true }
+)
 // tags
 const tagDelimiter = " "
 const tag = ref<string>("")
@@ -272,6 +282,10 @@ function dropTag(index: number) {
 const isSubmitting = ref(false);
 
 function onSubmit(composedEvent: ComposedEvent) {
+    if (selectedImages.value.length === 0) {
+        imageError.value = "At least one image is required"
+        return
+    }
     isSubmitting.value = true
     // modifications
     composedEvent.price = composedEvent.price ?? 0

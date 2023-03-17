@@ -1,17 +1,14 @@
 <template>
     <div>
-        <p>{{ thisEvent.user.followersCount }} Followers </p>
-        <div class="border-2 w-fit p-1 pr-3 border-gray-500 rounded-md cupo" @click.stop="toggleFollow"
-            :class="{ 'text-blue-800': adding || dropping }">
-            <div class="text-xl">
-                <span v-if="thisEvent.followed_by_user">
-                    <span>Following</span>
-                </span>
-                <span v-else class="flex gap-2 items-center">
-                    <Icon icon="material-symbols:add-rounded" class="text-3xl" />
-                    <span>Follow</span>
-                </span>
-            </div>
+        <div class="w-full p-2 pr-3 border-2 border-primary text-on-surface text-center font-medium rounded-md cupo"
+            @click.stop="toggleFollow" :class="{ 'text-blue-800': adding || dropping }">
+            <span v-if="thisEvent.followed_by_user">
+                <span>Following</span>
+            </span>
+            <span v-else class="flex gap-2 items-center">
+                <Icon icon="material-symbols:add-rounded" class="text-3xl" />
+                <span>Follow</span>
+            </span>
         </div>
     </div>
 </template>

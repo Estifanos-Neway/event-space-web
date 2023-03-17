@@ -1,9 +1,7 @@
 <template>
     <div class="h-full overflow-auto">
         <div v-if="result">
-            <h3>Edit Event</h3>
-            <br>
-            <EventComposer :getId="getId" :submitter="submitter" :oldEvent="result.eventsByPk" />
+            <EventComposer title="Edit Event" :getId="getId" :submitter="submitter" :oldEvent="result.eventsByPk" />
         </div>
         <div v-else-if="loading">
             Loading...

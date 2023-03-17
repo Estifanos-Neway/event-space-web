@@ -11,11 +11,11 @@
             </div>
             <span class="text-2xl">{{ thisEvent.bookmarks_count }}</span>
         </div>
-        <div v-else :class="{ 'animate-pulse': adding || dropping }">
-            <p>{{ thisEvent.bookmarks_count }} Bookmarks</p>
-            <div class="flex gap-4 items-center border-2 w-fit p-1 pr-3 border-gray-500 rounded-md cupo"
-                @click.stop="toggleBookmark" :class="{ 'text-gray-300': adding || dropping }">
-                <div class="text-3xl text-gray-100">
+        <div v-else :class="{ 'animate-pulse': adding || dropping }" class="w-full">
+            <p><span class="font-bold">{{ thisEvent.bookmarks_count }}</span> Bookmarks</p>
+            <div class="flex gap-4 justify-center items-center border-2 w-full p-1 pr-3 border-primary rounded-md font-medium cupo"
+                @click.stop="toggleBookmark" :class="{ 'border-disabled': adding || dropping }">
+                <div class="text-3xl text-primary">
                     <span v-if="thisEvent.bookmarked_by_user">
                         <Icon icon="material-symbols:bookmark-rounded" />
                     </span>

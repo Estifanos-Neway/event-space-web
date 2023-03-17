@@ -1,6 +1,6 @@
 <template>
     <div @click="router.push(`/events/${event.id}`)"
-        class="border-2 border-gray-300 w-[100%] cupo rounded-xl overflow-hidden">
+        class="border-2 border-gray-300 hover:border-primary w-[100%] cupo rounded-xl overflow-hidden">
         <div class="h-52" :class="{'border-b':!event.images}">
             <img :src="createStaticServerLink(event.images ?? defaultEventImageUrl)" :alt="event.title" class="w-full h-full object-cover " />
         </div>
