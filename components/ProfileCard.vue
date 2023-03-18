@@ -52,8 +52,8 @@
                     <form @submit.prevent="saveDescription">
                         <div v-show="editingDescription">
                             <div class="flex flex-col">
-                                <textarea ref="descriptionInputField" rows="5" cols="38" v-model="description"
-                                    @focusout="resetDescription" class="outline-none border-y-2"></textarea>
+                                <textarea ref="descriptionInputField" rows="5" v-model="description"
+                                    @focusout="resetDescription" class="outline-none border-y-2 lg:w-[470px]"></textarea>
                             </div>
                             <Icon icon="ic:round-done" class="text-3xl text-primary cupo"
                                 :class="{ 'text-disabled': updatingDescription }" @click="saveDescription" />

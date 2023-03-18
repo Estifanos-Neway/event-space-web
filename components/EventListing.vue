@@ -48,14 +48,14 @@
                                                 class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                                 <div>
                                                     <MenuItem
-                                                        class="px-3 py-2 hover:bg-gray-200 border-b border-b-gray-200">
+                                                        class="px-3 py-2 hover:bg-gray-200 border-b border-b-gray-200 cupo">
                                                     <div @click="sortByLocation = !sortByLocation">
                                                         <SortByItem :sortByItem="{ name: 'Distance', icon: '' }" />
                                                     </div>
                                                     </MenuItem>
                                                     <MenuItem v-for="sortByItem in Object.entries(sortByItems)"
                                                         :key="sortByItem[0]"
-                                                        class="px-3 py-2 hover:bg-gray-200 border-b border-b-gray-200">
+                                                        class="px-3 py-2 hover:bg-gray-200 border-b border-b-gray-200 cupo">
                                                     <div @click="sortBy = `${sortByItem[0]}`">
                                                         <SortByItem :sortByItem="sortByItem[1]" />
                                                     </div>
@@ -139,6 +139,15 @@
                                                 </li>
                                             </ul>
                                         </div>
+                                    </div>
+                                    <div v-show="filtersAdded">
+                                        <hr>
+                                        <div class="py-1 text-center">
+                                            <span class="font-bold text-primary cupo" @click="resetFilters">
+                                                Reset Filters
+                                            </span>
+                                        </div>
+                                        <hr>
                                     </div>
                                 </div>
                             </div>
@@ -226,6 +235,7 @@ let queryVars = reactive<GetEventsVars>(
         long: coords.value.longitude,
     }
 )
+
 let events = reactive<Array<EventPreview>>([])
 let getEvents: (result: any) => Array<EventPreview>
 let updateQuery: (previousResult: any, fetchMoreResult: any) => {}
@@ -303,15 +313,16 @@ watch([minPrice, maxPrice], ([minP, maxP]) => {
 })
 
 // filter by date
-const minDate = ref<string>()
-const maxDate = ref<string>()
+const minDate = ref<Date>()
+const maxDate = ref<Date>()
 watch([minDate, maxDate], ([minD, maxD]) => {
-    const range: { _gte?: string, _lte?: string } = {}
+    const range: { _gte?: Date, _lte?: Date | number } = {}
     if (minD) {
         range._gte = minD
     }
     if (maxD) {
-        range._lte = maxD
+        maxD = new Date(maxD)
+        range._lte = new Date(maxD.setDate(maxD.getDate() + 1))
     }
     queryVars.date = range
 })
@@ -421,7 +432,7 @@ function setQueries(listKind: listKindType) {
             break
     }
 }
-setQueries(props.listKind)
+setQueries("location")
 
 const { loading, onResult, onError: onGetEventsError, error, fetchMore, refetch } = useQuery<any, GetEventsVars>(
     queryDocument,
@@ -440,6 +451,31 @@ onGetEventsError(error => {
 function refetchEvents() {
     refetch()
 }
+
+let filtersAdded = ref(false)
+watchEffect(() => {
+    if (
+        sortByLocation.value &&
+        (minPrice.value === undefined || minPrice.value === "") &&
+        (maxPrice.value === undefined || maxPrice.value === "") &&
+        (minDate.value === undefined || minDate.value.toString() === "") &&
+        (maxDate.value === undefined || maxDate.value.toString() === "") &&
+        selectedCities.value.length === 0
+    ) {
+        filtersAdded.value = false
+    } else {
+        filtersAdded.value = true
+    }
+})
+function resetFilters() {
+    sortByLocation.value = true
+    minPrice.value = undefined
+    maxPrice.value = undefined
+    minDate.value = undefined
+    maxDate.value = undefined
+    selectedCities.value = []
+}
+
 
 // scrolling pagination
 const scrollingList = ref<HTMLInputElement | null>(null)
