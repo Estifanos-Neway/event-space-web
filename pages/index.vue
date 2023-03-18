@@ -1,4 +1,7 @@
 <template>
+    <Head>
+        <Title>Event Space</Title>
+    </Head>
     <div class="h-full overflow-auto flex flex-col items-center">
         <div class="relative bg-white">
             <div class="mx-auto max-w-7xl lg:grid lg:grid-cols-12 lg:gap-x-8 lg:px-8">
@@ -28,8 +31,7 @@
                 </div>
                 <div class="relative lg:col-span-5 lg:-mr-8 xl:absolute xl:inset-0 xl:left-1/2 xl:mr-0">
                     <img class="aspect-[3/2] w-full bg-gray-50 object-cover lg:absolute lg:inset-0 lg:aspect-auto lg:h-full"
-                        src="@/assets/images/landing.jpg"
-                        alt="" />
+                        src="@/assets/images/landing.jpg" alt="" />
                 </div>
             </div>
         </div>
@@ -93,18 +95,15 @@
                             <div
                                 class="contents lg:col-span-2 lg:col-end-2 lg:ml-auto lg:flex lg:w-[37rem] lg:items-start lg:justify-end lg:gap-x-8">
                                 <div class="order-first flex w-64 flex-none justify-end self-end lg:w-auto">
-                                    <img src="@/assets/images/about_us_2.jpg"
-                                        alt=""
+                                    <img src="@/assets/images/about_us_2.jpg" alt=""
                                         class="aspect-[4/3] w-[24rem] max-w-none flex-none rounded-2xl bg-gray-50 object-cover" />
                                 </div>
                                 <div class="flex w-96 flex-auto justify-end lg:w-auto lg:flex-none">
-                                    <img src="@/assets/images/about_us_3.jpg"
-                                        alt=""
+                                    <img src="@/assets/images/about_us_3.jpg" alt=""
                                         class="aspect-[7/5] w-[37rem] max-w-none flex-none rounded-2xl bg-gray-50 object-cover" />
                                 </div>
                                 <div class="hidden sm:block sm:w-0 sm:flex-auto lg:w-auto lg:flex-none">
-                                    <img src="@/assets/images/about_us_4.jpg"
-                                        alt=""
+                                    <img src="@/assets/images/about_us_4.jpg" alt=""
                                         class="aspect-[4/3] w-[24rem] max-w-none rounded-2xl bg-gray-50 object-cover" />
                                 </div>
                             </div>

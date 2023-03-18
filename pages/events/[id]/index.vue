@@ -1,5 +1,9 @@
 <template>
-    <div class="h-full overflow-auto pt-10">
+    <Head v-if="result">
+        <Title>{{ result.eventsByPk.title }}</Title>
+        <Meta name="description" :content="result.eventsByPk.description" />
+    </Head>
+    <div class="min-h-full flex flex-col h-full overflow-auto pt-10 justify-between">
         <div v-if="result?.eventsByPk" class="mx-auto w-fit max-w-[1090px]">
             <div class="px-7 max-xl:2lg:px-28">
                 <h3 class="text-xl font-bold mb-6">{{ result.eventsByPk.title }}</h3>
@@ -158,11 +162,15 @@
                 </div>
             </div>
         </div>
-        <div v-else-if="error">
-            Error getting event detail <span @click="refetchEvents">[Retry]</span>
+        <div v-else-if="error" class="flex justify-center pt-20 col-span-3">
+            <div class="w-fit">
+                <Error :retry="refetchEvent" />
+            </div>
         </div>
-        <div v-else="loading">
-            Loading...
+        <div v-else class="flex justify-center pt-20 col-span-3">
+            <div class="w-fit">
+                <Loading message="Loading event details..." />
+            </div>
         </div>
         <Footer />
 
@@ -250,7 +258,7 @@ onQueryDetailsError(error => {
     console.error("getting event detail onError:", error)
 })
 
-function refetchEvents() {
+function refetchEvent() {
     refetch()
 }
 

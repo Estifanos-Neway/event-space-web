@@ -1,4 +1,7 @@
 <template>
+    <Head>
+        <Title>Sign Up</Title>
+    </Head>
     <div class="h-full overflow-auto">
         <div class="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
             <div class="sm:mx-auto sm:w-full sm:max-w-md">
@@ -48,8 +51,8 @@
                             </div>
                             <div>
                                 <button type="submit" :disabled="isSubmitting || isLoading"
-                                    class="flex w-full disabled:bg-disabled justify-center rounded-md bg-primary text-on-primary py-3 px-3 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">Sign
-                                    Up
+                                    class="flex w-full justify-center disabled:bg-disabled disabled:text-gray-600 rounded-md bg-primary text-on-primary py-3 px-3 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
+                                    {{ isSubmitting || isLoading ? 'Signing up...' : 'Sign Up' }}
                                 </button>
                             </div>
                         </form>
@@ -93,7 +96,7 @@ onError((error) => {
 })
 onDone((result) => {
     if (result.data?.signUp.message === responses.OK) {
-        generalStore.setErrorNotification("SUCCESS! We have sent a verification link to your email!")
+        generalStore.setSuccessNotification("SUCCESS! We have sent a verification link to your email!")
     } else {
         console.error("signup onDone", result)
         generalStore.setSystemErrorNotification()

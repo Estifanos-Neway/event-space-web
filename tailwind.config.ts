@@ -21,7 +21,7 @@ export default <Partial<Config>>{
         warning: "#d1ab41",
         success: "#41d167",
         thin_gray: "#BFBFBF",
-        disabled:"#e0a3e3",
+        disabled:"#f0adf3",
         on: {
           primary: "#EBEBEB",
           secondary: "",

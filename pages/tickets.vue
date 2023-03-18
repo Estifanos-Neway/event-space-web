@@ -1,4 +1,7 @@
 <template>
+    <Head>
+        <Title>Tickets</Title>
+    </Head>
     <TicketListing v-if="userStore.isAuthorized" />
 </template>
 

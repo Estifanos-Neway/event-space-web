@@ -46,7 +46,7 @@
                                             leave-to-class="transform opacity-0 scale-95">
                                             <MenuItems
                                                 class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                                event.                                <div>
+                                                event. <div>
                                                     <MenuItem
                                                         class="px-3 py-2 hover:bg-gray-200 border-b border-b-gray-200">
                                                     <div @click="sortByLocation = !sortByLocation">
@@ -148,26 +148,36 @@
             </div>
             <div class="min-h-full">
                 <div v-if="events">
-                    <!-- <div class="flex flex-wrap items-stretch gap-5">
-                        <div v-for="event in events" class="mb-20 w-fit flex justify-center md:w-[47%] 2lg:w-[31%]"
-                            :class="{ 'md:w-[100%] 2lg:w-[48.5%] xl:w-[31.8%]': userStore.isAuthorized }" :key="event.id">
-                            <EventCard :event="event" />
-                        </div>
-                    </div> -->
-                    <div class="container grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-y-1 gap-x-12">
-                        <!-- <div > -->
+                    <div v-if="(events.length > 0)"
+                        class="container grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-y-1 gap-x-12">
                         <EventCard v-for="event in events" class="mb-20 w-full" :key="event.id" :event="event" />
-                        <!-- </div> -->
                     </div>
-                    <div :class="{ invisible: !loading }">
-                        loading...
+                    <div v-else class="flex flex-col items-center pt-20">
+                        <div
+                            class="flex flex-col gap-4 items-center border border-gray-300 w-fit p-12 rounded-xl shadow-lg">
+                            <span>
+                                <Icon icon="material-symbols:celebration-rounded" class="text-5xl text-primary" />
+                            </span>
+                            <span class="text-lg">
+                                {{ listKind === 'my' ? 'Your events' : listKind === 'saved' ? 'Saved events' : 'Events' }}
+                                will appear
+                                here
+                            </span>
+                        </div>
+                    </div>
+                    <div class="flex justify-center" :class="{ invisible: !loading }">
+                        <Spinner />
                     </div>
                 </div>
-                <div v-else-if="error">
-                    Error | <span class="text-blue-400" @click="refetchEvents">Retry</span>
+                <div v-else-if="error" class="flex justify-center pt-20 col-span-3">
+                    <div class="w-fit">
+                        <Error :retry="refetchEvents" />
+                    </div>
                 </div>
-                <div v-else>
-                    loading...
+                <div v-else class="flex justify-center pt-20 col-span-3">
+                    <div class="w-fit">
+                        <Loading message="Loading events..." />
+                    </div>
                 </div>
             </div>
             <Footer />

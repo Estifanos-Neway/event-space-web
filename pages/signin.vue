@@ -1,4 +1,7 @@
 <template>
+    <Head>
+        <Title>Sign In</Title>
+    </Head>
     <div class="h-full overflow-auto">
         <div class="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
             <div class="sm:mx-auto sm:w-full sm:max-w-md">
@@ -39,8 +42,8 @@
 
                             <div>
                                 <button type="submit" :disabled="isSubmitting || isLoading"
-                                    class="flex w-full disabled:bg-disabled justify-center rounded-md bg-primary text-on-primary py-3 px-3 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">Sign
-                                    in
+                                    class="flex w-full justify-center disabled:bg-disabled rounded-md bg-primary text-on-primary py-3 px-3 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
+                                    {{ isSubmitting || isLoading ? 'Signing in...' : 'Sign In' }}
                                 </button>
                             </div>
                         </form>

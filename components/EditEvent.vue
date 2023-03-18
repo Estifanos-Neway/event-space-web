@@ -1,13 +1,20 @@
 <template>
+    <Head>
+        <Title>Editing | {{ result?.eventsByPk.title ?? '' }}</Title>
+    </Head>
     <div class="h-full overflow-auto">
         <div v-if="result">
             <EventComposer title="Edit Event" :getId="getId" :submitter="submitter" :oldEvent="result.eventsByPk" />
         </div>
-        <div v-else-if="loading">
-            Loading...
+        <div v-else-if="loading" class="flex justify-center w-full pt-20">
+            <div class="w-fit">
+                <Loading />
+            </div>
         </div>
-        <div v-else>
-            Error getting event detail <span @click="refetchEvents">[Retry]</span>
+        <div v-else class="flex justify-center w-full pt-20">
+            <div class="w-fit">
+                <Error :retry="refetchEvent" />
+            </div>
         </div>
 
     </div>
@@ -36,7 +43,7 @@ onError(error => {
     console.error("getting event detail onError:", error)
 })
 
-function refetchEvents() {
+function refetchEvent() {
     refetch()
 }
 

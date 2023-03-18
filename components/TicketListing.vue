@@ -1,19 +1,36 @@
 <template>
     <div class="min-h-full h-full overflow-auto flex flex-col items-center justify-between">
-        <div class="p-9 max-w-[650px] xl:max-w-[1000px]">
+        <div class="p-9 max-w-[650px] xl:max-w-[1000px]"
+            :class="{ 'w-full': loadingTickets || (ticketsResult && ticketsResult.me.tickets.length > 0) }">
             <div class="w-full">
                 <h3 class="text-start w-full font-bold text-2xl mb-4 pl-1 ">Your Tickets</h3>
             </div>
-            <div v-if="ticketsResult" class="flex flex-col gap-12 w-fit ">
-                <div v-for="ticket in ticketsResult?.me.tickets" :key="ticket.id" >
+            <div v-if="ticketsResult" class="flex flex-col gap-12 w-fit "
+                :class="{ 'w-full': loadingTickets || (ticketsResult && ticketsResult.me.tickets.length > 0) }">
+                <div v-if="(ticketsResult.me.tickets.length > 0)" v-for="ticket in ticketsResult.me.tickets"
+                    :key="ticket.id">
                     <TicketCard :ticket="ticket" />
                 </div>
+                <div v-else class="flex flex-col items-center pt-20">
+                    <div class="flex flex-col gap-4 items-center border border-gray-300 w-fit p-12 rounded-xl shadow-lg">
+                        <span>
+                            <Icon icon="heroicons:ticket-20-solid" class="text-5xl text-primary" />
+                        </span>
+                        <span class="text-lg">
+                            Your tickets will appear here
+                        </span>
+                    </div>
+                </div>
             </div>
-            <div v-else-if="loadingTickets">
-                Loading...
+            <div v-else-if="loadingTickets" class="flex justify-center pt-20 col-span-3">
+                <div class="w-fit">
+                    <Loading message="Loading tickets..." />
+                </div>
             </div>
-            <div v-else-if="ticketsError">
-                Error <span @click="refetchTickets">Try again</span>
+            <div v-else-if="ticketsError" class="flex justify-center pt-20 col-span-3">
+                <div class="w-fit">
+                    <Error :retry="refetchTickets" />
+                </div>
             </div>
         </div>
         <Footer />
@@ -25,6 +42,8 @@ import { EventPreview } from "~~/graphql/events/event-preview.type";
 import { MyTicketsRes } from "~~/graphql/tickets/ticket.query.types";
 import { myTicketsQuery } from "../graphql/tickets"
 import { Ticket } from "../graphql/tickets/ticket.type"
+import { Icon } from "@iconify/vue";
+
 type organizedEvent = Array<{ event?: EventPreview, tickets?: Array<Ticket> }>
 
 const { result: ticketsResult, loading: loadingTickets, onError: onTicketsError, error: ticketsError, refetch: refetchTickets } = useQuery<MyTicketsRes, {}>(

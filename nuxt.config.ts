@@ -7,6 +7,11 @@ export default defineNuxtConfig({
         '@pinia-plugin-persistedstate/nuxt',
         '@vueuse/nuxt',
     ],
+    app:{
+        head:{
+            title:"Event Space"
+        }
+    },
     apollo: {
         clients: {
             default: {

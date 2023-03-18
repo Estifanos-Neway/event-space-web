@@ -3,11 +3,11 @@
         <div
             class="bg-background dark:bg-[#444343] text-on-background dark:text-dark-on-background font-default tracking-wider leading-relaxed min-h-screen">
             <div v-show="generalStore.hasNotification"
-                class="fixed w-screen bg-surface dark:bg-gray-300 flex justify-between items-center px-6 h-16 z-50 border-l-[13px] font-medium"
+                class="fixed w-screen bg-surface text-gray-200 font-bold  dark:bg-gray-300 flex justify-between items-center px-6 h-12 z-50"
                 :class="{
-                    'border-error': generalStore.notification.type === 'error',
-                    'border-warning': generalStore.notification.type === 'warning',
-                    'border-success': generalStore.notification.type === 'success',
+                    'bg-[#df0303]': generalStore.notification.type === 'error',
+                    'bg-warning': generalStore.notification.type === 'warning',
+                    'bg-[#A500CE]': generalStore.notification.type === 'success',
                 }">
                 {{ generalStore.notification.message }}
                 <span @click="generalStore.clearNotification">
