@@ -468,7 +468,7 @@ function handleScroll() {
     const element = scrollingList.value
     if (element) {
         const scrollBottom = element.scrollHeight - element.clientHeight - element.scrollTop
-        if (scrollBottom <= 15) {
+        if (scrollBottom <= 200) {
             loadMore()
         }
     }
