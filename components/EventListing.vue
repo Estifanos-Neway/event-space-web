@@ -152,7 +152,7 @@
                         <EventCard :event="event" />
                     </div>
                 </div> -->
-                <div class="flex flex-wrap items-stretch gap-5">
+                <div class="f">
                     <div v-for="event in events" class="mb-20 w-fit flex justify-center md:w-[47%] 2lg:w-[31%]"
                         :class="{ 'md:w-[100%] 2lg:w-[48.5%] xl:w-[31.8%]': userStore.isAuthorized }" :key="event.id">
                         <EventCard :event="event" />
