@@ -13,14 +13,14 @@
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
                         </div>
-                        <input type="search" v-model="searchText"
+                        <input v-model="searchText"
                             class="block w-full h-full p-4 pl-10 text-sm text-gray-900 border border-gray-200 rounded-lg bg-gray-50 outline-none shadow-md"
                             placeholder="Search Events...">
                     </div>
                     <div>
                         <div id="filterButton" data-dropdown-placement="bottom-end" data-dropdown-toggle="filterDropdown"
                             type="button"
-                            class="w-full h-full justify-center gap-x-1.5 text-gray-500 border bg-gray-50 border-gray-200 rounded-md px-3 py-[9.5px] text-sm font-semibold shadow-md hover:bg-gray-100">
+                            class="w-full h-full justify-center gap-x-1.5 text-gray-500 border bg-gray-50 border-gray-200 rounded-md px-3 py-[9.5px] text-sm font-semibold shadow-md hover:bg-gray-100 cupo">
                             <Icon icon="mi:filter" class="text-3xl" />
                         </div>
                         <div id="filterDropdown"
@@ -46,7 +46,7 @@
                                             leave-to-class="transform opacity-0 scale-95">
                                             <MenuItems
                                                 class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                                event. <div>
+                                                <div>
                                                     <MenuItem
                                                         class="px-3 py-2 hover:bg-gray-200 border-b border-b-gray-200">
                                                     <div @click="sortByLocation = !sortByLocation">
@@ -165,7 +165,7 @@
                             </span>
                         </div>
                     </div>
-                    <div class="flex justify-center" :class="{ invisible: !loading }">
+                    <div class="flex justify-center" :class="{ invisible: !loading || (events.length === 0) }">
                         <Spinner />
                     </div>
                 </div>
@@ -232,13 +232,8 @@ let updateQuery: (previousResult: any, fetchMoreResult: any) => {}
 
 // search
 const searchText = ref("")
-watch(searchText, () => {
-    if (searchText.value.length > 2 && props.listKind !== "saved") {
-        queryVars.search = searchText.value
-        setQueries("search")
-    } else {
-        setQueries(props.listKind)
-    }
+watchEffect(() => {
+    queryVars.search = `%${searchText.value}%`
 })
 
 // sort by location
@@ -464,11 +459,14 @@ function loadMore() {
     }
 }
 
+let lastFetched = 0
+let minTimeBeforeRefetch = 5 * 1000
 function handleScroll() {
     const element = scrollingList.value
     if (element) {
         const scrollBottom = element.scrollHeight - element.clientHeight - element.scrollTop
-        if (scrollBottom <= 200) {
+        if (scrollBottom <= 100 && (Date.now() - lastFetched > minTimeBeforeRefetch)) {
+            lastFetched = Date.now()
             loadMore()
         }
     }

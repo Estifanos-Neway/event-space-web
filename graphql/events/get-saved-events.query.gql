@@ -7,12 +7,24 @@ query getSavedEvents(
   $cityId: UuidComparisonExp
   $date: TimestamptzComparisonExp
   $price: NumericComparisonExp
+  $search: String
 ) {
   me {
     bookmarks(
       offset: $offset
       limit: $limit
-      where: { event: { cityId: $cityId, date: $date, price: $price } }
+      where: {
+        event: {
+          cityId: $cityId
+          date: $date
+          price: $price
+          _or: [
+            { tags: { _cast: { String: { _ilike: $search } } } }
+            { title: { _ilike: $search } }
+            { description: { _ilike: $search } }
+          ]
+        }
+      }
       orderBy: { event: $orderBy }
     ) {
       event {
