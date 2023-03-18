@@ -22,5 +22,10 @@ export interface GetEventQueryRes {
         tags: Array<string>
         title: string
         user: User
+        ticketsAggregate: {
+            aggregate: {
+                count: number
+            }
+        }
     }
 }

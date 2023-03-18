@@ -12,18 +12,21 @@
                                 <img :src="createStaticServerLink(result.eventsByPk.images[0])"
                                     class="mb-4 rounded-md w-full h-72 object-cover" />
                                 <p>{{ result.eventsByPk.description ?? "" }}</p>
+                                <span class="text-primary">
+                                    <span v-for="tag in result.eventsByPk.tags" class="mr-3">
+                                        <span class="font-bold">#</span>{{ tag }}
+                                    </span>
+                                </span>
                             </div>
                             <div class="flex flex-col gap-1">
                                 <div class="flex gap-2 items-center">
                                     <Icon icon="material-symbols:date-range" class="text-primary text-2xl" />
-                                    <span>{{ new Date(result.eventsByPk.date).toLocaleString([], {
-                                        year: 'numeric', month: 'numeric', day: 'numeric',
-                                        hour: '2-digit', minute: '2-digit'
-                                    }) }}</span>
+                                    <span>{{ getFullFormattedDate(result.eventsByPk.date.toString()) }}</span>
                                 </div>
                                 <div class="flex gap-2 items-center" v-if="result.eventsByPk.city?.name">
                                     <Icon icon="mdi:map-marker" class="text-primary text-2xl" />
-                                    <span>{{ result.eventsByPk.city.name }}</span>
+                                    <span>{{ result.eventsByPk.city.name }} {{ result.eventsByPk.specificAddress ? `,
+                                                                            ${result.eventsByPk.specificAddress}` : "" }}</span>
                                 </div>
                             </div>
                         </div>
@@ -31,8 +34,19 @@
                     <div class="bg-surface px-5 py-7 xl:hidden">
                         <div class="flex gap-10 w-full mb-7">
                             <div class="w-full">
-                                <h3 class="font-bold"> {{ result.eventsByPk.price }} ETB</h3>
-                                <BuyTicket :event="result.eventsByPk" />
+                                <h3 class="font-bold"> {{ result.eventsByPk.price ? `${result.eventsByPk.price} ETB` :
+                                    "FREE" }}</h3>
+                                <div v-if="(new Date(result.eventsByPk.date) - new Date()) < 0"
+                                    class="text-center border-t border-primary pt-2">
+                                    <!-- 86400000 is one day in milliseconds -->
+                                    This event was {{ -Math.floor((new Date(result.eventsByPk.date) - new Date()) /
+                                        (86400000)) }} days
+                                    ago!
+                                </div>
+                                <BuyTicket v-else-if="result.eventsByPk.price" :event="result.eventsByPk" />
+                                <div v-else class="text-center border-t border-primary pt-2">
+                                    This is a free event!
+                                </div>
                             </div>
                             <div class="w-full">
                                 <Bookmark :isPreview="false" :event="result.eventsByPk" />
@@ -57,28 +71,6 @@
                             <Follow :event="result.eventsByPk" />
                         </div>
                     </div>
-
-                    <!-- <div className=' flex justify-center items-center'>
-                        <div className='group text-xl'>
-                            <strong className='group-hover:text-red-500'>Hover on me </strong>
-                            <strong className='group-hover:text-green-500'>the texts will be </strong>
-                            <strong className='group-hover:text-blue-500'>of different colors</strong>
-                        </div>
-                    </div> -->
-                    <!-- <button data-popover-target="popover-default" type="button"
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Default
-                        popover</button>
-                    <div data-popover id="popover-default" role="tooltip"
-                        class="absolute z-10 invisible inline-block w-64 text-sm font-light text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
-                        <div
-                            class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
-                            <h3 class="font-semibold text-gray-900 dark:text-white">Popover title</h3>
-                        </div>
-                        <div class="px-3 py-2">
-                            <p>And here's some amazing content. It's very engaging. Right?</p>
-                        </div>
-                        <div data-popper-arrow></div>
-                    </div> -->
                     <div>
                         <h3 class="mb-1">Location In map</h3>
                         <iframe v-if="result.eventsByPk.location?.[0] && result.eventsByPk.location?.[1]"
@@ -95,12 +87,22 @@
                             <img class="h-40 object-cover" v-for="imageUrl in result.eventsByPk.images" :key="imageUrl"
                                 :src="createStaticServerLink(imageUrl)" />
                         </div> -->
-                        <div class="space-y-4">
-                            <img class="h-72 w-full object-cover rounded-md" v-for="imageUrl in result.eventsByPk.images"
-                                :key="imageUrl" :src="createStaticServerLink(imageUrl)" />
+                        <div class="space-y-7">
+                            <img class="h-72 w-full object-contain rounded-md border-2 p-1"
+                                v-for="imageUrl in result.eventsByPk.images" :key="imageUrl"
+                                :src="createStaticServerLink(imageUrl)" />
                         </div>
                     </div>
                     <div v-if="userStore.id === result.eventsByPk.user.id">
+                        <hr class="pt-6 mt-4" />
+                        <div class="text-primary">
+                            <span class="font-bold">
+                                {{ result.eventsByPk.ticketsAggregate.aggregate.count }}
+                            </span>
+                            <span>
+                                Tickets sold so far.
+                            </span>
+                        </div>
                         <hr class="pt-6 mt-4" />
                         <h4 class="font-bold mb-1">Actions</h4>
                         <div class="pl-4">
@@ -118,8 +120,19 @@
                 </div>
                 <div class="bg-surface px-6 py-10 h-fit max-xl:hidden col-span-2 flex flex-col gap-7">
                     <div class="w-full">
-                        <h3 class="font-bold"> {{ result.eventsByPk.price }} ETB</h3>
-                        <BuyTicket :event="result.eventsByPk" />
+                        <h3 class="font-bold"> {{ result.eventsByPk.price ? `${result.eventsByPk.price} ETB` : "FREE" }}
+                        </h3>
+                        <div v-if="(new Date(result.eventsByPk.date) - new Date()) < 0"
+                            class="text-center border-t border-primary pt-2">
+                            <!-- 86400000 is one day in milliseconds -->
+                            This event was {{ -Math.floor((new Date(result.eventsByPk.date) - new Date()) /
+                                (86400000)) }} days
+                            ago!
+                        </div>
+                        <BuyTicket v-else-if="result.eventsByPk.price" :event="result.eventsByPk" />
+                        <div v-else class="text-center border-t border-primary pt-2">
+                            This is a free event!
+                        </div>
                     </div>
                     <div class="w-full">
                         <Bookmark :isPreview="false" :event="result.eventsByPk" />
@@ -216,7 +229,7 @@ import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } fro
 import { ExclamationTriangleIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { deleteEventMutation } from '~~/graphql/events'
 import { DeleteEventRes, DeleteEventVars } from '~~/graphql/events/delete-event.mutation.types'
-import { createStaticServerLink } from '~~/commons/functions';
+import { createStaticServerLink, getFullFormattedDate } from '~~/commons/functions';
 import { Icon } from '@iconify/vue';
 
 const userStore = useUserStore()

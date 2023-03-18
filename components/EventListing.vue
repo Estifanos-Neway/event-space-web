@@ -1,6 +1,7 @@
 <template>
     <div @scroll="handleScroll" ref="scrollingList" class="h-full overflow-auto p-5 pt-16 flex flex-col items-center">
-        <div class="min-h-full w-[95%] max-w-[1400px] flex flex-col  gap-12 items-start justify-between">
+        <div
+            class="min-h-full w-[95%] sm:max-md:w-[550px] md:max-xl:max-w-[640px] max-2xl:max-w-[900px] max-w-[1240px] space-y-12 items-start justify-between">
             <div class="w-full">
                 <h3 class="text-start w-full font-bold text-2xl mb-4">{{ title }}</h3>
                 <div class="flex w-full gap-3 items-center max-w-[1000px]">
@@ -24,7 +25,7 @@
                         </div>
                         <div id="filterDropdown"
                             class="z-10 hidden bg-background border-2 border-gray-300 rounded-lg shadow-lg">
-                            <div class="py-1">bg-gray-50
+                            <div class="py-1">
                                 <div class="flex flex-col gap-4 p-5 ">
                                     <Menu as="div" class="relative inline-block text-left">
                                         <h5 class="field-label text-black">Sort By</h5>
@@ -45,7 +46,7 @@
                                             leave-to-class="transform opacity-0 scale-95">
                                             <MenuItems
                                                 class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                                <div>
+                                                event.                                <div>
                                                     <MenuItem
                                                         class="px-3 py-2 hover:bg-gray-200 border-b border-b-gray-200">
                                                     <div @click="sortByLocation = !sortByLocation">
@@ -145,28 +146,29 @@
                     </div>
                 </div>
             </div>
-            <div v-if="events">
-                <!-- <div class="flex flex-wrap items-stretch gap-5">
-                    <div v-for="event in events" class="mb-20 w-fit flex justify-center md:w-[47%] 2lg:w-[31%]"
-                        :class="{ 'md:w-[100%] 2lg:w-[48.5%] xl:w-[31.8%]': userStore.isAuthorized }" :key="event.id">
-                        <EventCard :event="event" />
+            <div class="min-h-full">
+                <div v-if="events">
+                    <!-- <div class="flex flex-wrap items-stretch gap-5">
+                        <div v-for="event in events" class="mb-20 w-fit flex justify-center md:w-[47%] 2lg:w-[31%]"
+                            :class="{ 'md:w-[100%] 2lg:w-[48.5%] xl:w-[31.8%]': userStore.isAuthorized }" :key="event.id">
+                            <EventCard :event="event" />
+                        </div>
+                    </div> -->
+                    <div class="container grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-y-1 gap-x-12">
+                        <!-- <div > -->
+                        <EventCard v-for="event in events" class="mb-20 w-full" :key="event.id" :event="event" />
+                        <!-- </div> -->
                     </div>
-                </div> -->
-                <div class="f">
-                    <div v-for="event in events" class="mb-20 w-fit flex justify-center md:w-[47%] 2lg:w-[31%]"
-                        :class="{ 'md:w-[100%] 2lg:w-[48.5%] xl:w-[31.8%]': userStore.isAuthorized }" :key="event.id">
-                        <EventCard :event="event" />
+                    <div :class="{ invisible: !loading }">
+                        loading...
                     </div>
                 </div>
-                <div :class="{ invisible: !loading }">
+                <div v-else-if="error">
+                    Error | <span class="text-blue-400" @click="refetchEvents">Retry</span>
+                </div>
+                <div v-else>
                     loading...
                 </div>
-            </div>
-            <div v-else-if="error">
-                Error | <span class="text-blue-400" @click="refetchEvents">Retry</span>
-            </div>
-            <div v-else>
-                loading...
             </div>
             <Footer />
         </div>

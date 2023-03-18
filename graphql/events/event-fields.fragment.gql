@@ -20,4 +20,9 @@ fragment eventFields on Events {
   }
   bookmarked_by_user
   followed_by_user
+  ticketsAggregate {
+    aggregate {
+      count
+    }
+  }
 }

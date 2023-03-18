@@ -18,4 +18,9 @@ export type Event = {
     user: User
     bookmarked_by_user?: string
     followed_by_user?: string
+    ticketsAggregate: {
+        aggregate: {
+            count: number
+        }
+    }
 }
