@@ -32,7 +32,7 @@
                 <input class="invisible" type="file" id="avatar-selector" accept="image/*" @change="uploadAvatar"
                     :disabled="uploadingAvatarUrl || deletingAvatarUrl" />
             </div>
-            <div class="flex flex-col gap-2 pl-2 lg:pt-2 lg:pl-4">
+            <div class="flex flex-col gap-2 pl-2 lg:pl-4">
                 <div class="flex flex-col">
                     <form @submit.prevent="saveName">
                         <div v-show="editingName" class="w-full">

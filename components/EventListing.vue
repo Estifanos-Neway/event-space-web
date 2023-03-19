@@ -452,7 +452,7 @@ const { loading, onResult, onError: onGetEventsError, error, fetchMore, refetch 
     queryDocument,
     queryVars,
     {
-        fetchPolicy: "network-only"
+        fetchPolicy: "cache-and-network"
     }
 )
 onResult((result) => {

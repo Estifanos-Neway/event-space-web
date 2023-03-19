@@ -104,7 +104,7 @@
                     </div>
                 </aside>
                 <div class="max-h-screen overflow-hidden pb-20 md:ml-64 lg:ml-72">
-                    <div class="h-24 flex justify-between md:justify-end items-center px-6 md:pr-12 xl:pr-32 border-b">
+                    <div class="h-24 flex justify-between md:justify-endd items-center px-6 md:px-12 xl:px-32 border-b">
                         <div class="flex gap-6 md:hidden">
                             <button data-drawer-target="default-sidebar" data-drawer-toggle="default-sidebar"
                                 aria-controls="default-sidebar" type="button"
@@ -119,11 +119,21 @@
                             </button>
                             <Logo />
                         </div>
+                        <div class="max-md:hidden">
+                            <div class="text-xl flex items-center">
+                                <span>{{ greeting }}</span>
+                                <span class="text-primary font-bold ">,</span>
+                                <pre> </pre>
+                                <span> {{ userStore.name.substring(0, userStore.name.indexOf(" ")) }}</span>
+                                <pre> </pre>
+                                <span class="mb-0.5 -ml-1 text-lg">👋</span>
+                            </div>
+                            <div class="text-xs">
+                                You are signed in as <span class="text-primary">{{ userStore.name }}</span>
+                            </div>
+                        </div>
                         <div class="flex items-center">
                             <Profile />
-                            <!-- <div class="w-0.5 h-8 rounded-lg bg-gray-300">
-                            </div>
-                            <ThemeToggle /> -->
                         </div>
                     </div>
                     <div class="h-[90vh]">
@@ -145,6 +155,26 @@ import { Icon } from '@iconify/vue';
 const generalStore = useGeneralStore()
 const userStore = useUserStore()
 const { getToken } = useApollo()
+
+let greeting = "Good "
+var now = (new Date()).getHours();
+switch (true) {
+    case now < 13:
+        greeting += "Morning"
+        break;
+    case now <= 14:
+        greeting += "Noon"
+        break;
+    case now < 18:
+        greeting += "Afternoon"
+        break;
+    case now < 21:
+        greeting += "Evening"
+        break;
+    case now < 24:
+        greeting += "Night"
+        break;
+}
 
 onMounted(() => {
     generalStore.clearNotification()
@@ -179,7 +209,10 @@ const sideBarLinks = [
     },
     {
         link: "/events/my",
-        text: "My Events"
+        text: "My Events",
+        icon: {
+            icon: "mdi:wizard-hat"
+        }
     },
     {
         link: "/events/saved",

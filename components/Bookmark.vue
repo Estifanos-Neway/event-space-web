@@ -32,8 +32,9 @@
 <script setup lang="ts">
 import { EventPreview } from '~~/graphql/events/event-preview.type';
 import { Icon } from '@iconify/vue';
-import { useUserStore } from '~~/pinia-stores';
+import { useGeneralStore, useUserStore } from '~~/pinia-stores';
 
+const generalStore = useGeneralStore()
 const props = defineProps<{
     isPreview: boolean
     event: EventPreview
@@ -44,18 +45,23 @@ const router = useRouter()
 const thisEvent = { ...props.event }
 const { mutate: add, onDone: onAddDone, onError: onAddError, loading: adding } = addBookmark()
 const { mutate: drop, onDone: onDropDone, onError: onDropError, loading: dropping } = dropBookmark()
+
 onAddDone(result => {
     thisEvent.bookmarked_by_user = result.data?.insertBookmarksOne.id
-    thisEvent.bookmarks_count++
 })
 onAddError(error => {
+    thisEvent.bookmarks_count--
+    generalStore.setErrorNotification("Couldn't bookmark the event, please try again!")
     console.error("onAddError:", error)
+
 })
+
 onDropDone(() => {
     thisEvent.bookmarked_by_user = undefined
-    thisEvent.bookmarks_count--
 })
 onDropError(error => {
+    thisEvent.bookmarks_count++
+    generalStore.setErrorNotification("Couldn't un-bookmark the event, please try again!")
     console.error("onDropError:", error)
 })
 
@@ -65,8 +71,10 @@ function toggleBookmark() {
     } else if (adding.value || dropping.value) {
         return
     } else if (thisEvent.bookmarked_by_user) {
+        thisEvent.bookmarks_count--
         drop({ id: thisEvent.bookmarked_by_user })
     } else {
+        thisEvent.bookmarks_count++
         add({ eventId: thisEvent.id })
     }
 }
