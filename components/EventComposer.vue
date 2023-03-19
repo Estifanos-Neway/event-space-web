@@ -161,8 +161,8 @@
                         <ErrorMessage name="price" />
                     </div>
                 </div>
-                <button :disabled="isSubmitting" :class="{ 'text-disabled': isSubmitting }"
-                    class="btn h-12 bg-primary text-on-primary font-medium">Publish Event</button>
+                <button :disabled="isSubmitting"
+                    class="btn h-12 bg-primary disabled:bg-disabled disabled:border-disabled text-on-primary font-medium">{{ isSubmitting ? 'Publishing...' : 'Publish' }}</button>
             </form>
         </Form>
     </div>
@@ -222,8 +222,8 @@ onGetCitiesError(error => {
     console.error("onGetCitiesError:", error)
 })
 
-const selectedCity = ref<string | undefined>(oldEvent?.city.id ?? undefined)
-const selectedCityName = ref<string | undefined>(oldEvent?.city.name ?? undefined)
+const selectedCity = ref<string | undefined>(oldEvent?.city?.id ?? undefined)
+const selectedCityName = ref<string | undefined>(oldEvent?.city?.name ?? undefined)
 watch(selectedCity, () => {
     selectedCityName.value = getCitiesResult.value?.cities.find(city => city.id === selectedCity.value)?.name
 })

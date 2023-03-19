@@ -7,9 +7,9 @@ export default defineNuxtConfig({
         '@pinia-plugin-persistedstate/nuxt',
         '@vueuse/nuxt',
     ],
-    app:{
-        head:{
-            title:"Event Space"
+    app: {
+        head: {
+            title: "Event Space"
         }
     },
     apollo: {
@@ -27,5 +27,5 @@ export default defineNuxtConfig({
     vite: {
         ssr: true,
         build: true
-    },
+    }
 })

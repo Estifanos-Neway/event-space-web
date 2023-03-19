@@ -27,7 +27,7 @@
                             </div>
                         </div>
                         <div id="filterDropdown"
-                            class="z-10 hiddenn bg-background border-2 border-gray-300 rounded-lg shadow-lg">
+                            class="z-10 hidden bg-background border-2 border-gray-300 rounded-lg shadow-lg">
                             <div class="py-1">
                                 <div class="flex flex-col gap-4 p-5 ">
                                     <Menu as="div" class="relative inline-block text-left">
@@ -52,7 +52,7 @@
                                                 <div>
                                                     <MenuItem
                                                         class="px-3 py-2 hover:bg-gray-200 border-b border-b-gray-200 cupo">
-                                                    <div @click="sortByLocation = !sortByLocation">
+                                                    <div @click="sortByLocation = true">
                                                         <SortByItem :sortByItem="{ name: 'Distance', icon: '' }" />
                                                     </div>
                                                     </MenuItem>
@@ -159,7 +159,12 @@
                 </div>
             </div>
             <div class="min-h-full">
-                <div v-if="events">
+                <div v-if="loading && events.length === 0" class="flex justify-center pt-20 col-span-3">
+                    <div class="w-fit">
+                        <Loading message="Loading events..." />
+                    </div>
+                </div>
+                <div v-else-if="events">
                     <div v-if="(events.length > 0)"
                         class="container grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-y-1 gap-x-12">
                         <EventCard v-for="event in events" class="mb-20 w-full" :key="event.id" :event="event" />
@@ -186,11 +191,6 @@
                         <Error :retry="refetchEvents" />
                     </div>
                 </div>
-                <div v-else class="flex justify-center pt-20 col-span-3">
-                    <div class="w-fit">
-                        <Loading message="Loading events..." />
-                    </div>
-                </div>
             </div>
             <Footer />
         </div>
@@ -199,8 +199,8 @@
 
 <script setup lang="ts">
 import { DocumentNode } from "graphql";
-import { GetEventsVars, SearchEventsRes, GetEventsRes, GetMyEventsRes, GetSavedEventsRes, GetEventsByLocationRes } from "~~/graphql/events/get-events.types";
-import { getEventsQuery, searchEventsQuery, getEventByLocationQuery, getMyEventsQuery, getSavedEventsQuery } from "~~/graphql/events"
+import { GetEventsVars, GetEventsRes, GetMyEventsRes, GetSavedEventsRes, GetEventsByLocationRes } from "~~/graphql/events/get-events.types";
+import { getEventsQuery, getEventByLocationQuery, getMyEventsQuery, getSavedEventsQuery } from "~~/graphql/events"
 import { EventPreview } from "~~/graphql/events/event-preview.type";
 import { useFilterStore, useUserStore } from "~~/pinia-stores";
 import { initDropdowns } from 'flowbite'
@@ -219,50 +219,7 @@ const props = defineProps<
     }
 >()
 const { coords } = useGeolocation()
-// vars
-const paginationLimit: number = 8
-const userId = userStore.id
-let queryDocument = ref<DocumentNode>(getEventsQuery)
-let queryVars = reactive<GetEventsVars>(
-    {
-        offset: 0,
-        limit: paginationLimit,
-        orderBy: {},
-        cityId: {},
-        date: {},
-        price: {},
-        userId: userId && props.listKind === "my" ? { _eq: userId } : {},
-        bookmarks: {},
-        search: "",
-        lat: coords.value.latitude,
-        long: coords.value.longitude,
-    }
-)
 
-let events = reactive<Array<EventPreview>>([])
-let getEvents: (result: any) => Array<EventPreview>
-let updateQuery: (previousResult: any, fetchMoreResult: any) => {}
-
-// search
-const searchText = ref("")
-watchEffect(() => {
-    queryVars.search = `%${searchText.value}%`
-})
-
-// sort by location
-watch(coords, () => {
-    queryVars.lat = coords.value.latitude
-    queryVars.long = coords.value.longitude
-})
-const sortByLocation = ref<boolean>(true)
-watch(sortByLocation, () => {
-    if (sortByLocation.value) {
-        setQueries("location")
-        sortBy.value = "none"
-    } else {
-        setQueries(props.listKind)
-    }
-})
 
 // sortBY
 const sortBys = {
@@ -291,19 +248,66 @@ const sortByItems = {
         icon: "mdi:arrow-down-thin"
     }
 }
+// vars
+const paginationLimit: number = 8
+const userId = userStore.id
+let queryDocument = ref<DocumentNode>(getEventsQuery)
+let queryVars = reactive<GetEventsVars>(
+    {
+        offset: 0,
+        limit: paginationLimit,
+        orderBy: sortBys[filterStore.orderBy],
+        cityId: filterStore.cityId,
+        date: filterStore.date,
+        price: filterStore.price,
+        userId: userId && props.listKind === "my" ? { _eq: userId } : {},
+        bookmarks: {},
+        search: "",
+        lat: coords.value.latitude,
+        long: coords.value.longitude,
+    }
+)
 
-const sortBy = ref("none")
+let events = ref<Array<EventPreview>>([])
+let getEvents: (result: any) => Array<EventPreview>
+let updateQuery: (previousResult: any, fetchMoreResult: any) => {}
+
+// search
+const searchText = ref(filterStore.searchText)
+watchEffect(() => {
+    queryVars.search = `%${searchText.value}%`
+    filterStore.searchText = searchText.value
+})
+
+// sort by location
+watch(coords, () => {
+    queryVars.lat = coords.value.latitude
+    queryVars.long = coords.value.longitude
+})
+const sortByLocation = ref<boolean>(filterStore.orderBy === "none")
+watch(sortByLocation, () => {
+    if (sortByLocation.value) {
+        queryVars.orderBy = {}
+        sortBy.value = "none"
+        setQueries("location")
+    } else {
+        setQueries(props.listKind)
+    }
+})
+
+const sortBy = ref(filterStore.orderBy)
 watch(sortBy, (newValue) => {
     if (newValue != "none") {
         sortByLocation.value = false
     }
     // @ts-ignore
     queryVars.orderBy = sortBys[newValue]
+    filterStore.orderBy = newValue
 })
 
 // filter by price
-const minPrice = ref()
-const maxPrice = ref()
+const minPrice = ref(filterStore.price._gte)
+const maxPrice = ref(filterStore.price._lte)
 watch([minPrice, maxPrice], ([minP, maxP]) => {
     const range: { _gte?: number, _lte?: number } = {}
     if (typeof minP === "number") {
@@ -313,21 +317,34 @@ watch([minPrice, maxPrice], ([minP, maxP]) => {
         range._lte = maxP
     }
     queryVars.price = range
+    filterStore.price = range
 })
 
 // filter by date
-const minDate = ref<Date>()
-const maxDate = ref<Date>()
+let lastMaxDate = filterStore.date._lte
+if (lastMaxDate) {
+    lastMaxDate = new Date(lastMaxDate)
+    lastMaxDate = new Date(lastMaxDate.setDate(lastMaxDate.getDate() - 1))
+    let month: number | string = lastMaxDate.getUTCMonth() + 1
+    month = month < 10 ? `0${month}` : month
+    let date: number | string = lastMaxDate.getDate()
+    date = date < 10 ? `0${date}` : date
+    lastMaxDate = `${lastMaxDate.getFullYear()}-${month}-${date}`
+}
+const minDate = ref<Date>(filterStore.date._gte!)
+const maxDate = ref<Date | number | string | undefined>(lastMaxDate)
 watch([minDate, maxDate], ([minD, maxD]) => {
-    const range: { _gte?: Date, _lte?: Date | number } = {}
+    const range: { _gte?: Date, _lte?: Date | number | string } = {}
     if (minD) {
         range._gte = minD
     }
     if (maxD) {
         maxD = new Date(maxD)
-        range._lte = new Date(maxD.setDate(maxD.getDate() + 1))
+        maxD = new Date(maxD.setDate(maxD.getDate() + 1))
+        range._lte = maxD
     }
     queryVars.date = range
+    filterStore.date = range
 })
 
 // filter by cities
@@ -335,13 +352,16 @@ const { result: getCitiesResult, onError: onGetCitiesError } = getCities()
 onGetCitiesError(error => {
     console.error("onGetCitiesError:", error)
 })
-const selectedCities = ref<Array<string>>([])
+const selectedCities = ref<string[]>(filterStore.selectedCities)
 watch(selectedCities, () => {
     if (selectedCities.value.length) {
         queryVars.cityId = { _in: selectedCities.value }
+        filterStore.cityId = { _in: selectedCities.value }
     } else {
         queryVars.cityId = {}
+        filterStore.cityId = {}
     }
+    filterStore.selectedCities = selectedCities.value
 })
 const citySearchText = ref("")
 const searchedCities = ref<Boolean[]>([])
@@ -403,22 +423,8 @@ function setQueries(listKind: listKindType) {
                 }
             )
             break
-        case "search":
-            queryDocument.value = searchEventsQuery
-            getEvents = (result: SearchEventsRes) => {
-                return result.searchEvents
-            }
-            updateQuery = (previousResult: SearchEventsRes, fetchMoreResult: SearchEventsRes) => (
-                {
-                    ...previousResult,
-                    events: [
-                        ...previousResult.searchEvents,
-                        ...fetchMoreResult.searchEvents,
-                    ],
-                }
-            )
-            break
         case "location":
+            if (props.listKind === "saved") return setQueries(props.listKind)
             queryDocument.value = getEventByLocationQuery
             getEvents = (result: GetEventsByLocationRes) => {
                 return result.eventsByLocation
@@ -426,7 +432,7 @@ function setQueries(listKind: listKindType) {
             updateQuery = (previousResult: GetEventsByLocationRes, fetchMoreResult: GetEventsByLocationRes) => (
                 {
                     ...previousResult,
-                    events: [
+                    eventsByLocation: [
                         ...previousResult.eventsByLocation,
                         ...fetchMoreResult.eventsByLocation,
                     ],
@@ -435,7 +441,12 @@ function setQueries(listKind: listKindType) {
             break
     }
 }
-setQueries("location")
+let initialQuery: listKindType = props.listKind
+if (props.listKind !== "saved" && filterStore.orderBy === "none") {
+    initialQuery = "location"
+}
+// setQueries(props.listKind === "saved" ? "saved" : filterStore.orderBy === "none" ? "location" : props.listKind)
+setQueries(initialQuery)
 
 const { loading, onResult, onError: onGetEventsError, error, fetchMore, refetch } = useQuery<any, GetEventsVars>(
     queryDocument,
@@ -445,7 +456,7 @@ const { loading, onResult, onError: onGetEventsError, error, fetchMore, refetch 
     }
 )
 onResult((result) => {
-    events = getEvents(result.data)
+    events.value = getEvents(result.data)
 })
 
 onGetEventsError(error => {
@@ -487,7 +498,7 @@ function loadMore() {
     if (!loading.value) {
         fetchMore({
             variables: {
-                offset: events.length,
+                offset: events.value.length,
                 limit: paginationLimit
             },
             updateQuery: (previousResult, { fetchMoreResult }) => {

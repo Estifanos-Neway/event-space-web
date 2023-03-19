@@ -90,7 +90,7 @@ onDone((result) => {
         const accessToken = result.data.signIn.userLogIn?.accessToken
         const refreshToken = result.data.signIn.userLogIn?.refreshToken
         useUserLogin(accessToken!, refreshToken!)
-        router.replace("/")
+        router.replace("/events")
     } else {
         console.error("signin onDone", result)
         generalStore.setSystemErrorNotification()

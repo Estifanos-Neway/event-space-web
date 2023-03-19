@@ -3,6 +3,10 @@ import { getCitesQuery } from "~~/graphql/cities";
 
 export function getCities() {
     return useQuery<GetCitiesQueryRes, {}>(
-        getCitesQuery
+        getCitesQuery,
+        {},
+        {
+            fetchPolicy: "cache-and-network"
+        }
     )
 }

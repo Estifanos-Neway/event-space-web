@@ -61,7 +61,7 @@
                             <div class="flex justify-between items-end mb-2">
                                 <div>
                                     <div :user="userStore" id="userDropdownInEvent" class="z-10 hidden">
-                                        <ProfileCard :editable="false" :user="userStore" />
+                                        <ProfileCard :editable="false" :user="result.eventsByPk.user" />
                                     </div>
                                     <p class="font-semibold text-primary" data-dropdown-toggle="userDropdownInEvent"
                                         data-dropdown-placement="bottom-start">
@@ -78,7 +78,7 @@
                     <div>
                         <h3 class="mb-1">Location In map</h3>
                         <iframe v-if="result.eventsByPk.location?.[0] && result.eventsByPk.location?.[1]"
-                            class="w-full h-96"
+                            class="w-full h-96 border border-gray-300 rounded-md"
                             :src="`https://maps.google.com/maps?q=${result.eventsByPk.location?.[0]},${result.eventsByPk.location?.[1]}&z=15&output=embed`"></iframe>
                         <div v-else class="flex gap-2 border-2 px-5 py-10 rounded-md" v-if="result.eventsByPk.city?.name">
                             <Icon icon="mdi:map-marker" class="text-primary text-2xl" />
@@ -87,15 +87,42 @@
                     </div>
                     <div>
                         <h4 class="mb-1">More images</h4>
-                        <!-- <div class="grid grid-cols-3 gap-3">
-                            <img class="h-40 object-cover" v-for="imageUrl in result.eventsByPk.images" :key="imageUrl"
-                                :src="createStaticServerLink(imageUrl)" />
-                        </div> -->
-                        <div class="space-y-7">
-                            <img class="h-72 w-full object-contain rounded-md border-2 p-1"
-                                v-for="imageUrl in result.eventsByPk.images" :key="imageUrl"
-                                :src="createStaticServerLink(imageUrl)" />
+                        <div class="grid grid-cols-3 gap-3">
+                            <img v-for="imageUrl in result.eventsByPk.images" :key="imageUrl"
+                                @click="openFullImage(createStaticServerLink(imageUrl))"
+                                :src="createStaticServerLink(imageUrl)"
+                                class="h-40 object-cover border-2 border-gray-300 rounded-md text-center w-full" />
                         </div>
+                        <TransitionRoot as="template" :show="isFullImageShowing">
+                            <Dialog as="div" class="relative z-50" @close="isFullImageShowing = false">
+                                <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0"
+                                    enter-to="opacity-100" leave="ease-in duration-200" leave-from="opacity-100"
+                                    leave-to="opacity-0">
+                                    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                                </TransitionChild>
+
+                                <div class="fixed inset-0 z-50 overflow-y-auto h-screen flex items-center justify-center">
+                                    <div class="flex justify-center p-4 text-center items-center">
+                                        <TransitionChild as="template" enter="ease-out duration-300 h-full"
+                                            enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                            enter-to="opacity-100 translate-y-0 sm:scale-100" leave="ease-in duration-200"
+                                            leave-from="opacity-100 translate-y-0 sm:scale-100"
+                                            leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+                                            <DialogPanel
+                                                class="relative transform overflow-hidden  p-4 transition-all h-full">
+                                                <div class="flex justify-center h-full">
+                                                    <img :src="showingImageUrl" class="rounded-md w-[85%] h-full object-contain" />
+                                                </div>
+                                            </DialogPanel>
+                                        </TransitionChild>
+                                    </div>
+                                    <div class="absolute top-10 right-10">
+                                        <Icon icon="material-symbols:close-rounded" @click="isFullImageShowing = false"
+                                            class="text-white cupo text-4xl" />
+                                    </div>
+                                </div>
+                            </Dialog>
+                        </TransitionRoot>
                     </div>
                     <div v-if="userStore.id === result.eventsByPk.user.id">
                         <hr class="pt-6 mt-4" />
@@ -146,7 +173,7 @@
                         <div class="flex justify-between items-end mb-2">
                             <div>
                                 <div :user="userStore" id="userDropdownInEvent2" class="z-10 hidden">
-                                    <ProfileCard :editable="false" :user="userStore" />
+                                    <ProfileCard :editable="false" :user="result.eventsByPk.user" />
                                 </div>
                                 <p class="font-semibold text-primary" data-dropdown-toggle="userDropdownInEvent2"
                                     data-dropdown-placement="bottom-start">
@@ -176,13 +203,13 @@
 
         <!-- Delete confirmation pop -->
         <TransitionRoot :show="isDeleteConfirmPopupOpen">
-            <Dialog as="div" class="relative z-10" @close="closeDeleteConfirmPopup">
+            <Dialog as="div" class="relative z-50" @close="closeDeleteConfirmPopup">
                 <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100"
                     leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
                     <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
                 </TransitionChild>
 
-                <div class="fixed inset-0 z-10 overflow-y-auto">
+                <div class="fixed inset-0 z-50 overflow-y-auto">
                     <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                         <TransitionChild as="template" enter="ease-out duration-300"
                             enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
@@ -239,6 +266,7 @@ import { deleteEventMutation } from '~~/graphql/events'
 import { DeleteEventRes, DeleteEventVars } from '~~/graphql/events/delete-event.mutation.types'
 import { createStaticServerLink, getFullFormattedDate } from '~~/commons/functions';
 import { Icon } from '@iconify/vue';
+import { ref } from 'vue'
 
 const userStore = useUserStore()
 const route = useRoute()
@@ -279,7 +307,13 @@ function deleteEvent() {
         mutate({ id: result.value.eventsByPk.id })
     }
 }
-
+// full image
+const showingImageUrl = ref<string>("")
+const isFullImageShowing = ref(false)
+function openFullImage(url: string) {
+    showingImageUrl.value = url
+    isFullImageShowing.value = true
+}
 // deleting dialog
 const isDeleteConfirmPopupOpen = ref(false)
 function closeDeleteConfirmPopup() {

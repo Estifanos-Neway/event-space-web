@@ -112,7 +112,7 @@
                             <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
                                 Ready to <span class="text-primary">join us?</span>
                                 <br />
-                                Or start by exploring events.
+                                Or start by exploring events?
                             </h2>
                             <div class="mt-10 flex items-center gap-x-6">
                                 <NuxtLink href="/signup"

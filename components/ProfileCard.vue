@@ -53,7 +53,8 @@
                         <div v-show="editingDescription">
                             <div class="flex flex-col">
                                 <textarea ref="descriptionInputField" rows="5" v-model="description"
-                                    @focusout="resetDescription" class="outline-none border-y-2 lg:w-[470px]"></textarea>
+                                    @focusout="resetDescription"
+                                    class="outline-none border-y-2 w-[340px] lg:w-[470px]"></textarea>
                             </div>
                             <Icon icon="ic:round-done" class="text-3xl text-primary cupo"
                                 :class="{ 'text-disabled': updatingDescription }" @click="saveDescription" />
@@ -124,7 +125,7 @@ const generalStore = useGeneralStore()
 const props = withDefaults(defineProps<
     {
         user: User,
-        editable: boolean
+        editable?: boolean
     }
 >(),
     {
@@ -154,22 +155,18 @@ function resetName() {
         }
     }, 500)
 }
-function saveNameOnEnter(event: Event) {
-    // console.log(event)
-    if (event.type === "enter") {
-        saveName()
-    }
-}
 function finishUpdatingName() {
     editingName.value = false
     updatingName.value = false
 }
 function saveName() {
-    console.log("here")
     if (updatingName.value) return
     const newName = name.value.trim();
     if (newName !== "" && newName !== props.user.name) {
         updatingName.value = true
+        const oldName = props.user.name
+        props.user.name = newName
+        finishUpdatingName()
         const { mutate: updateName, onDone: onUpdateNameDone, onError: onUpdateNameError } = useMutation<UpdateUserMutationRes, UpdateUserMutationVars>(
             updateUserMutation,
             {
@@ -189,14 +186,14 @@ function saveName() {
                 props.user.name = updatedName
                 finishUpdatingName()
             } else {
-                name.value = props.user.name
+                name.value = oldName
                 finishUpdatingName()
                 generalStore.setSystemErrorNotification()
                 console.error("onUpdateNameDone:", result)
             }
         })
         onUpdateNameError(error => {
-            name.value = props.user.name
+            name.value = oldName
             finishUpdatingName()
             generalStore.setSystemErrorNotification()
             console.error("onUpdateNameError:", error)
@@ -240,6 +237,9 @@ function saveDescription() {
     const newDescription = description.value.trim();
     if (newDescription !== props.user.description) {
         updatingDescription.value = true
+        const oldDescription = props.user.description
+        props.user.description = newDescription
+        finishUpdatingDescription()
         const { mutate: updateDescription, onDone: onUpdateDescriptionDone, onError: onUpdateDescriptionError } = useMutation<UpdateUserMutationRes, UpdateUserMutationVars>(
             updateUserMutation,
             {
@@ -259,14 +259,14 @@ function saveDescription() {
                 props.user.description = updatedDescription
                 finishUpdatingDescription()
             } else {
-                description.value = props.user.description
+                description.value = oldDescription
                 finishUpdatingDescription()
                 generalStore.setSystemErrorNotification()
                 console.error("onUpdateDescriptionDone:", result)
             }
         })
         onUpdateDescriptionError(error => {
-            description.value = props.user.description
+            description.value = oldDescription
             finishUpdatingDescription()
             generalStore.setSystemErrorNotification()
             console.error("onUpdateDescriptionError:", error)
