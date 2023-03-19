@@ -1,9 +1,9 @@
 <template>
     <Head>
-        <Title>Sign Up</Title>
+        <Title>Sign Up | Event Space</Title>
     </Head>
-    <div class="h-full overflow-auto">
-        <div class="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="min-h-full h-full overflow-auto flex flex-col justify-between">
+        <div v-if="!verificationSent" class="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
             <div class="sm:mx-auto sm:w-full sm:max-w-md">
                 <h1 class="font-logo tracking-wider font-bold text-3xl text-center">
                     Event <span class="text-primary">Space</span>
@@ -31,7 +31,7 @@
                                 <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email
                                     address</label>
                                 <div class="mt-2">
-                                    <Field id="email" name="email" type="email" autocomplete="email"
+                                    <Field id="email" name="email" type="email" aria-autocomplete="off"
                                         class="block w-full rounded-md border-0 p-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6" />
                                     <div class="error-message">
                                         <ErrorMessage name="email" />
@@ -42,7 +42,7 @@
                                 <label for="password"
                                     class="block text-sm font-medium leading-6 text-gray-900">Password</label>
                                 <div class="mt-2">
-                                    <Field id="password" name="password" type="password"
+                                    <Field id="password" name="password" type="password" aria-autocomplete="off"
                                         class="block w-full rounded-md border-0 p-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6" />
                                     <div class="error-message">
                                         <ErrorMessage name="password" />
@@ -60,6 +60,17 @@
                 </div>
             </div>
         </div>
+        <div v-else class="flex flex-col items-center pt-20">
+            <div class="w-fit flex flex-col items-center border-2 rounded-lg border-gray-300 shadow-md py-10 px-7 gap-2">
+                <h3 class="font-bold text-2xl text-primary">
+                    SUCCESS!
+                </h3>
+                <p>
+                    We have sent a verification link to your email!
+                </p>
+                <p class="text-primary font-medium">{{ email }}</p>
+            </div>
+        </div>
         <Footer />
     </div>
 </template>
@@ -72,7 +83,8 @@ import { useGeneralStore } from "@/pinia-stores";
 import { responses } from "@/graphql/commons"
 
 const generalStore = useGeneralStore()
-
+const verificationSent = ref<boolean>(false)
+const email = ref<string>("")
 const schema = object({
     name: string().required().label("Name"),
     email: string().required().email().label("Email"),
@@ -96,13 +108,15 @@ onError((error) => {
 })
 onDone((result) => {
     if (result.data?.signUp.message === responses.OK) {
-        generalStore.setSuccessNotification("SUCCESS! We have sent a verification link to your email!")
+        verificationSent.value = true
+        // generalStore.setSuccessNotification("SUCCESS! We have sent a verification link to your email!")
     } else {
         console.error("signup onDone", result)
         generalStore.setSystemErrorNotification()
     }
 })
 function onSubmit(values: any) {
+    email.value = values.email
     generalStore.clearNotification()
     const variables: SignupMutationVars = {
         name: values.name,

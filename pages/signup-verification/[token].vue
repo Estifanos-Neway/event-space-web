@@ -1,6 +1,6 @@
 <template>
     <Head>
-        <Title>Email verification</Title>
+        <Title>Email verification | Event Space</Title>
     </Head>
     <div class="h-full w-full flex justify-center items-center">
         <div v-if="loading">

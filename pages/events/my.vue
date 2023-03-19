@@ -1,6 +1,6 @@
 <template>
     <Head>
-        <Title>My events</Title>
+        <Title>My events | Event Space</Title>
     </Head>
     <EventListing title="My events" v-if="userStore.isAuthorized" listKind="my" />
 </template>

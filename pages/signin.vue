@@ -1,6 +1,6 @@
 <template>
     <Head>
-        <Title>Sign In</Title>
+        <Title>Sign In | Event Space</Title>
     </Head>
     <div class="h-full overflow-auto">
         <div class="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">

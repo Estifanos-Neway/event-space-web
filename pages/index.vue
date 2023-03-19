@@ -1,6 +1,6 @@
 <template>
     <Head>
-        <Title>Event Space</Title>
+        <Title>Home | Event Space</Title>
     </Head>
     <div class="h-full overflow-auto flex flex-col items-center">
         <div class="relative bg-white">

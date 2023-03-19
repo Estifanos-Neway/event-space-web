@@ -1,6 +1,6 @@
 <template>
     <Head>
-        <Title>New event</Title>
+        <Title>New event | Event Space</Title>
     </Head>
     <CreateEvent v-if="userStore.isAuthorized" />
 </template>

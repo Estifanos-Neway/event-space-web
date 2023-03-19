@@ -20,11 +20,14 @@
                     <div>
                         <div id="filterButton" data-dropdown-placement="bottom-end" data-dropdown-toggle="filterDropdown"
                             type="button"
-                            class="w-full h-full justify-center gap-x-1.5 text-gray-500 border bg-gray-50 border-gray-200 rounded-md px-3 py-[9.5px] text-sm font-semibold shadow-md hover:bg-gray-100 cupo">
+                            class="relative w-full h-full justify-center gap-x-1.5 text-gray-500 border bg-gray-50 border-gray-200 rounded-md px-3 py-[9.5px] text-sm font-semibold shadow-md hover:bg-gray-100 cupo">
                             <Icon icon="mi:filter" class="text-3xl" />
+                            <div v-show="filtersAdded"
+                                class="absolute inline-flex items-center justify-center w-6 h-6 bg-primary rounded-full -top-2 -right-2 shadow-2xl border-4 border-background">
+                            </div>
                         </div>
                         <div id="filterDropdown"
-                            class="z-10 hidden bg-background border-2 border-gray-300 rounded-lg shadow-lg">
+                            class="z-10 hiddenn bg-background border-2 border-gray-300 rounded-lg shadow-lg">
                             <div class="py-1">
                                 <div class="flex flex-col gap-4 p-5 ">
                                     <Menu as="div" class="relative inline-block text-left">
@@ -199,7 +202,7 @@ import { DocumentNode } from "graphql";
 import { GetEventsVars, SearchEventsRes, GetEventsRes, GetMyEventsRes, GetSavedEventsRes, GetEventsByLocationRes } from "~~/graphql/events/get-events.types";
 import { getEventsQuery, searchEventsQuery, getEventByLocationQuery, getMyEventsQuery, getSavedEventsQuery } from "~~/graphql/events"
 import { EventPreview } from "~~/graphql/events/event-preview.type";
-import { useUserStore } from "~~/pinia-stores";
+import { useFilterStore, useUserStore } from "~~/pinia-stores";
 import { initDropdowns } from 'flowbite'
 import { useGeolocation } from '@vueuse/core'
 import { Icon } from '@iconify/vue';
@@ -207,7 +210,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { ChevronDownIcon } from '@heroicons/vue/20/solid'
 
 type listKindType = "all" | "my" | "saved" | "search" | "location"
-
+const filterStore = useFilterStore()
 const userStore = useUserStore()
 const props = defineProps<
     {

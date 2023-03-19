@@ -1,6 +1,6 @@
 <template>
     <Head>
-        <Title>Saved events</Title>
+        <Title>Saved events | Event Space</Title>
     </Head>
     <EventListing title="Saved events" v-if="userStore.isAuthorized" listKind="saved" />
 </template>
