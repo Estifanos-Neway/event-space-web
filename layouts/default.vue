@@ -120,7 +120,7 @@
                             <Logo />
                         </div>
                         <div class="max-md:hidden">
-                            <div class="text-xl flex items-center">
+                            <div class="text-xl flex items-center font-medium">
                                 <span>{{ greeting }}</span>
                                 <span class="text-primary font-bold ">,</span>
                                 <pre> </pre>

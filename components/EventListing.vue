@@ -256,6 +256,7 @@ let queryVars = reactive<GetEventsVars>(
     {
         offset: 0,
         limit: paginationLimit,
+        // @ts-ignore
         orderBy: sortBys[filterStore.orderBy],
         cityId: filterStore.cityId,
         date: filterStore.date,
@@ -306,8 +307,8 @@ watch(sortBy, (newValue) => {
 })
 
 // filter by price
-const minPrice = ref(filterStore.price._gte)
-const maxPrice = ref(filterStore.price._lte)
+const minPrice = ref<number | string | undefined>(filterStore.price._gte)
+const maxPrice = ref<number | string | undefined>(filterStore.price._lte)
 watch([minPrice, maxPrice], ([minP, maxP]) => {
     const range: { _gte?: number, _lte?: number } = {}
     if (typeof minP === "number") {
@@ -331,7 +332,7 @@ if (lastMaxDate) {
     date = date < 10 ? `0${date}` : date
     lastMaxDate = `${lastMaxDate.getFullYear()}-${month}-${date}`
 }
-const minDate = ref<Date>(filterStore.date._gte!)
+const minDate = ref<Date | undefined>(filterStore.date._gte!)
 const maxDate = ref<Date | number | string | undefined>(lastMaxDate)
 watch([minDate, maxDate], ([minD, maxD]) => {
     const range: { _gte?: Date, _lte?: Date | number | string } = {}
@@ -370,7 +371,7 @@ watch(citySearchText, () => {
         searchedCities.value = getCitiesResult.value?.cities.map(city => city.name.toLowerCase().includes(citySearchText.value.toLocaleLowerCase()))
     }
 })
-function setQueries(listKind: listKindType) {
+function setQueries(listKind: listKindType): void {
     switch (listKind) {
         case "all":
             queryDocument.value = getEventsQuery
@@ -424,7 +425,7 @@ function setQueries(listKind: listKindType) {
             )
             break
         case "location":
-            if (props.listKind === "saved") return setQueries(props.listKind)
+            if (props.listKind !== "all") return setQueries(props.listKind)
             queryDocument.value = getEventByLocationQuery
             getEvents = (result: GetEventsByLocationRes) => {
                 return result.eventsByLocation
@@ -442,7 +443,7 @@ function setQueries(listKind: listKindType) {
     }
 }
 let initialQuery: listKindType = props.listKind
-if (props.listKind !== "saved" && filterStore.orderBy === "none") {
+if (props.listKind === "all" && filterStore.orderBy === "none") {
     initialQuery = "location"
 }
 // setQueries(props.listKind === "saved" ? "saved" : filterStore.orderBy === "none" ? "location" : props.listKind)
