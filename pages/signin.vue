@@ -28,7 +28,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div>
+                            <div class="flex flex-col">
                                 <label for="password"
                                     class="block text-sm font-medium leading-6 text-gray-900">Password</label>
                                 <div class="mt-2">
@@ -38,6 +38,7 @@
                                         <ErrorMessage name="password" />
                                     </div>
                                 </div>
+                                <span class="text-sm text-primary font-bold self-end mt-1 mr-1 cupo">Forgot Password?</span>
                             </div>
 
                             <div>
