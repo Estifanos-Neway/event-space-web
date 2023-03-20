@@ -122,10 +122,8 @@
                         <div v-if="userStore.name" class="max-md:hidden">
                             <div class="text-xl flex items-center font-medium">
                                 <span>{{ greeting }}</span>
-                                <span class="text-primary font-bold ">,</span>
-                                <pre> </pre>
-                                <span> {{ userStore.name.substring(0, userStore.name.indexOf(" ")) }}</span>
-                                <pre> </pre>
+                                <span class="text-primary font-bold mr-2">, </span>
+                                <span class="mr-2"> {{ userStore.name.substring(0, userStore.name.indexOf(" ")) }}</span>
                                 <span class="mb-0.5 -ml-1 text-lg">👋</span>
                             </div>
                             <div class="text-xs">
