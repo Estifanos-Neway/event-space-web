@@ -37,6 +37,7 @@ import { useGeneralStore, useUserStore } from '~~/pinia-stores';
 const props = defineProps<{
     isPreview: boolean
     event: EventPreview
+    dropEvent: () => void
 }>()
 
 const generalStore = useGeneralStore()
@@ -71,6 +72,7 @@ function toggleBookmark() {
         return
     } else if (thisEvent.bookmarked_by_user) {
         thisEvent.bookmarks_count--
+        props.dropEvent()
         drop({ id: thisEvent.bookmarked_by_user })
     } else {
         thisEvent.bookmarks_count++

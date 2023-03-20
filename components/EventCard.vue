@@ -34,7 +34,7 @@
                             event.price ? `${event.price} ETB` : "FREE"
                         }}
                     </span>
-                    <Bookmark :isPreview="true" :event="event" />
+                    <Bookmark :isPreview="true" :event="event" :dropEvent="dropEvent" />
                 </div>
                 <div v-if="(new Date(event.date) - new Date()) < 0" class="text-center border-t border-primary pt-2">
                     <!-- 86400000 is one day in milliseconds -->
@@ -59,6 +59,7 @@ const router = useRouter()
 const descriptionPreviewLength: number = 90
 const props = defineProps<{
     event: EventPreview
+    dropEvent: () => void
 }>()
 const description = props.event.description ?? ""
 

@@ -167,7 +167,8 @@
                 <div v-else-if="events">
                     <div v-if="(events.length > 0)"
                         class="container grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-y-1 gap-x-12">
-                        <EventCard v-for="event in events" class="mb-20 w-full" :key="event.id" :event="event" />
+                        <EventCard v-for="event in events" class="mb-20 w-full" :key="event.id" :event="event"
+                            :dropEvent="() => dropEvent(event.id)" />
                     </div>
                     <div v-else class="flex flex-col items-center pt-20">
                         <div
@@ -411,18 +412,24 @@ function setQueries(listKind: listKindType): void {
             getEvents = (result: GetSavedEventsRes) => {
                 return result.me.bookmarks.map(bookmark => bookmark.event)
             }
-            updateQuery = (previousResult: GetSavedEventsRes, fetchMoreResult: GetSavedEventsRes) => (
-                {
+            updateQuery = (previousResult: GetSavedEventsRes, fetchMoreResult: GetSavedEventsRes) => {
+                return {
                     ...previousResult,
                     me: {
                         ...previousResult.me,
                         bookmarks: [
-                            ...previousResult.me.bookmarks,
+                            // ...previousResult.me.bookmarks,
+                            ...events.value.map(event => (
+                                {
+                                    __typename: "Bookmarks",
+                                    event
+                                }
+                            )),
                             ...fetchMoreResult.me.bookmarks,
                         ]
                     },
                 }
-            )
+            }
             break
         case "location":
             if (props.listKind !== "all") return setQueries(props.listKind)
@@ -493,6 +500,11 @@ function resetFilters() {
     selectedCities.value = []
 }
 
+function dropEvent(eventId: string) {
+    if (props.listKind === "saved") {
+        events.value = events.value.filter(event => event.id != eventId)
+    }
+}
 
 // scrolling pagination
 const scrollingList = ref<HTMLInputElement | null>(null)
