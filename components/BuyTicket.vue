@@ -19,15 +19,17 @@
                                 leave-from="opacity-100 translate-y-0 sm:scale-100"
                                 leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
                                 <DialogPanel
-                                    class="relative max-w-[400px] transform overflow-hidden rounded-lg bg-surface px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
-                                    <div v-if="ticketAdded">
-                                        <span class="font-bold text-lg">Congratulations, You have successfully bought a ticket!</span>
+                                    class="relative text-on-background max-w-[400px] transform overflow-hidden rounded-lg bg-surface p-6 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+                                    <div v-if="!ticketAdded" class="flex flex-col text-center text-md p-4">
+                                        <span class="font-bold text-3xl text-primary">Congratulations!</span>
+                                        <span>You have successfully bought a ticket!</span>
+                                        <span>The Tickets QR Code has been sent to your email.</span>
                                         <div class="mt-5 sm:mt-6">
                                             <button type="button" class="ticket-sell-dialog-btn cupo"
                                                 @click="resetTicket">Okay</button>
                                         </div>
                                     </div>
-                                    <div v-else-if="ticketError">
+                                    <div v-else-if="ticketError" class="p-4 text-center">
                                         <span class="text-error">Sorry,somethings went wrong and we couldn't process your
                                             request, please try again.</span>
                                         <div class="mt-5 sm:mt-6">
@@ -35,11 +37,11 @@
                                                 @click="resetTicket">Close</button>
                                         </div>
                                     </div>
-                                    <div v-else class="text-on-surface">
+                                    <div v-else class="">
                                         <img :src="createStaticServerLink(event.images)"
                                             class="h-[250px] w-full rounded-md object-cover mb-1" />
                                         <div class="ml-0.5">
-                                            <h3 class="text-lg font-bold">
+                                            <h3 class="text-lg font-semibold">
                                                 {{ event.title }}
                                             </h3>
                                             <div class="py-2">
