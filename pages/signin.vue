@@ -29,7 +29,7 @@
                                 </div>
                             </div>
                             <div class="flex flex-col">
-                                <label for="password"
+                                <!-- <label for="password"
                                     class="block text-sm font-medium leading-6 text-gray-900">Password</label>
                                 <div class="mt-2">
                                     <Field id="password" name="password" type="password"
@@ -38,7 +38,22 @@
                                         <ErrorMessage name="password" />
                                     </div>
                                 </div>
-                                <span class="text-sm text-primary font-bold self-end mt-1 mr-1 cupo">Forgot Password?</span>
+                                <span class="text-sm text-primary font-bold self-end mt-1 mr-1 cupo">Forgot Password?</span> -->
+                                <Field v-slot="{ field, errors }" name="password">
+                                    <input id="password" v-bind="field" name="password" autocomplete="off"
+                                        :type="showPassword ? 'text' : 'password'"
+                                        class="block w-full rounded-md border-0 p-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6" />
+                                    <div v-if="errors[0]" class="error-message">{{ errors[0] }}</div>
+                                </Field>
+                                <div class="flex justify-between mt-2">
+                                    <div class="flex gap-2 mt-2 ml-1 text-sm">
+                                        <input id="showPasswordCheckbox" type="checkbox" v-model="showPassword"
+                                            class="cupo [accent-color:#A500CE]" />
+                                        <label for="showPasswordCheckbox" class="cupo">show password</label>
+                                    </div>
+                                    <span class="text-sm text-primary font-bold self-end mt-1 mr-1 cupo">Forgot
+                                        Password?</span>
+                                </div>
                             </div>
 
                             <div>
@@ -70,6 +85,8 @@ const schema = object({
     email: string().required().email().label("Email"),
     password: string().required().min(6).label("Password"),
 })
+const showPassword = ref(false)
+const passwordField = ref<HTMLInputElement | null>(null)
 
 const { mutate, loading: isLoading, onError, onDone } = useMutation<SigninMutationRes, SigninMutationVars>(
     signinMutation,

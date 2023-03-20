@@ -14,7 +14,8 @@ export function useEventsByLocation(offset: number, limit: number) {
             orderBy: {},
             date: {},
             price: {},
-            cityId: {}
+            cityId: {},
+            search: "%%"
         },
         {
             fetchPolicy: "cache-and-network"

@@ -3,7 +3,7 @@
         <div
             class="bg-background dark:bg-[#444343] text-on-background dark:text-dark-on-background font-default tracking-wider leading-relaxed min-h-screen">
             <div v-show="generalStore.hasNotification"
-                class="fixed w-screen bg-surface text-gray-200 font-bold  dark:bg-gray-300 flex justify-between items-center px-6 h-12 z-50"
+                class="fixed w-screen text-gray-200 font-bold  dark:bg-gray-300 flex justify-between items-center px-6 h-12 z-50 "
                 :class="{
                     'bg-[#df0303]': generalStore.notification.type === 'error',
                     'bg-warning': generalStore.notification.type === 'warning',
