@@ -162,7 +162,8 @@
                     </div>
                 </div>
                 <button :disabled="isSubmitting"
-                    class="btn h-12 bg-primary disabled:bg-disabled disabled:border-disabled text-on-primary font-medium">{{ isSubmitting ? 'Publishing...' : 'Publish' }}</button>
+                    class="btn h-12 bg-primary disabled:bg-disabled disabled:border-disabled text-on-primary font-medium">{{
+                        isSubmitting ? 'Publishing...' : 'Publish' }}</button>
             </form>
         </Form>
     </div>
@@ -192,7 +193,7 @@ const props = defineProps<
 // schema
 const schema = object({
     title: string().required("Title is required").label("Title"),
-    description: string().label("Description"),
+    description: string().transform((value) => (typeof value === "string" ? value : "")).label("Description"),
     date: date().typeError("Date is required").required("Date is required").min(new Date(), "Date can't be set to past").label("Date"),
     latitude: number().transform((value) => (isNaN(value) ? 0 : value)).min(-90).max(90),
     longitude: number().transform((value) => (isNaN(value) ? 0 : value)).min(-180).max(180),

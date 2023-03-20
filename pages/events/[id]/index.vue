@@ -43,7 +43,7 @@
                                 <div v-if="(new Date(result.eventsByPk.date) - new Date()) < 0"
                                     class="text-center border-t border-primary pt-2">
                                     <!-- 86400000 is one day in milliseconds -->
-                                    This event was {{ -Math.floor((new Date(result.eventsByPk.date) - new Date()) /
+                                    This event happened {{ -Math.floor((new Date(result.eventsByPk.date) - new Date()) /
                                         (86400000)) }} days
                                     ago!
                                 </div>
@@ -69,10 +69,10 @@
                                     </p>
                                 </div>
                                 <p class="whitespace-nowrap"><span class="font-bold">{{
-                                    result.eventsByPk.user.followersCount
+                                    followersCount
                                 }}</span> Followers </p>
                             </div>
-                            <Follow :event="result.eventsByPk" />
+                            <Follow :followersCountUpdater="updateFollowersCount" :event="result.eventsByPk" />
                         </div>
                     </div>
                     <div>
@@ -111,7 +111,8 @@
                                             <DialogPanel
                                                 class="relative transform overflow-hidden  p-4 transition-all h-full">
                                                 <div class="flex justify-center h-full">
-                                                    <img :src="showingImageUrl" class="rounded-md w-[85%] h-full object-contain" />
+                                                    <img :src="showingImageUrl"
+                                                        class="rounded-md w-[85%] h-full object-contain" />
                                                 </div>
                                             </DialogPanel>
                                         </TransitionChild>
@@ -156,7 +157,7 @@
                         <div v-if="(new Date(result.eventsByPk.date) - new Date()) < 0"
                             class="text-center border-t border-primary pt-2">
                             <!-- 86400000 is one day in milliseconds -->
-                            This event was {{ -Math.floor((new Date(result.eventsByPk.date) - new Date()) /
+                            This event happened {{ -Math.floor((new Date(result.eventsByPk.date) - new Date()) /
                                 (86400000)) }} days
                             ago!
                         </div>
@@ -181,10 +182,10 @@
                                 </p>
                             </div>
                             <p class="whitespace-nowrap"><span class="font-bold">{{
-                                result.eventsByPk.user.followersCount
+                                followersCount
                             }}</span> Followers </p>
                         </div>
-                        <Follow :event="result.eventsByPk" />
+                        <Follow :followersCountUpdater="updateFollowersCount" :event="result.eventsByPk" />
                     </div>
                 </div>
             </div>
@@ -271,8 +272,8 @@ import { ref } from 'vue'
 const userStore = useUserStore()
 const route = useRoute()
 const router = useRouter()
-
-const { result, error, onError: onQueryDetailsError, refetch } = useQuery<GetEventQueryRes, GetEventQueryVars>(
+const followersCount = ref<number>()
+const { result, onResult: onEventResult, error, onError: onQueryDetailsError, refetch } = useQuery<GetEventQueryRes, GetEventQueryVars>(
     getEventQuery,
     {
         id: route.params.id as string
@@ -281,7 +282,9 @@ const { result, error, onError: onQueryDetailsError, refetch } = useQuery<GetEve
         fetchPolicy: "network-only"
     }
 )
-
+onEventResult(() => {
+    followersCount.value = result.value?.eventsByPk.user.followersCount
+})
 onQueryDetailsError(error => {
     console.error("getting event detail onError:", error)
 })
@@ -305,6 +308,11 @@ onError(error => {
 function deleteEvent() {
     if (result.value) {
         mutate({ id: result.value.eventsByPk.id })
+    }
+}
+function updateFollowersCount(addCount: number): void {
+    if (followersCount.value) {
+        followersCount.value += addCount
     }
 }
 // full image

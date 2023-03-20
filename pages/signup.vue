@@ -55,7 +55,8 @@
                                         <div v-if="errors[0]" class="error-message">{{ errors[0] }}</div>
                                     </Field>
                                     <div class="flex gap-2 mt-2 ml-1 text-sm">
-                                        <input id="showPasswordCheckbox" type="checkbox" v-model="showPassword" class="cupo [accent-color:#A500CE]" />
+                                        <input id="showPasswordCheckbox" type="checkbox" v-model="showPassword"
+                                            class="cupo [accent-color:#A500CE]" />
                                         <label for="showPasswordCheckbox" class="cupo">show password</label>
                                     </div>
                                 </div>
@@ -90,11 +91,15 @@ import { Form, Field, ErrorMessage } from "vee-validate"
 import { string, object } from "yup"
 import { signupMutation } from "@/graphql/auth"
 import { SignupMutationRes, SignupMutationVars } from "@/graphql/auth/signup-mutation.types"
-import { useGeneralStore } from "@/pinia-stores";
+import { useGeneralStore, useUserStore } from "@/pinia-stores";
 import { responses } from "@/graphql/commons"
 
+const router = useRouter()
 const generalStore = useGeneralStore()
 const verificationSent = ref<boolean>(false)
+const userStore = useUserStore()
+if (userStore.isAuthorized) router.replace("/events")
+
 const email = ref<string>("")
 const schema = object({
     name: string().required().label("Name"),

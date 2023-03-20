@@ -75,11 +75,13 @@ import { Form, Field, ErrorMessage } from "vee-validate"
 import { string, object } from "yup"
 import { signinMutation } from "@/graphql/auth"
 import { SigninMutationRes, SigninMutationVars } from "@/graphql/auth/signin-mutation.types"
-import { useGeneralStore } from "@/pinia-stores";
+import { useGeneralStore, useUserStore } from "@/pinia-stores";
 import { responses } from "@/graphql/commons"
 
 const generalStore = useGeneralStore()
 const router = useRouter()
+const userStore = useUserStore()
+if (userStore.isAuthorized) router.replace("/events")
 
 const schema = object({
     email: string().required().email().label("Email"),
@@ -108,7 +110,8 @@ onDone((result) => {
         const accessToken = result.data.signIn.userLogIn?.accessToken
         const refreshToken = result.data.signIn.userLogIn?.refreshToken
         useUserLogin(accessToken!, refreshToken!)
-        router.replace("/events")
+        // router.replace("/events")
+        router.go(-1)
     } else {
         console.error("signin onDone", result)
         generalStore.setSystemErrorNotification()

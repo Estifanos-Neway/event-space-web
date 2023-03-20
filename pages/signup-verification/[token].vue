@@ -55,7 +55,7 @@ onDone(result => {
         const accessToken = result.data.verifySignUp.userLogIn?.accessToken
         const refreshToken = result.data.verifySignUp.userLogIn?.refreshToken
         useUserLogin(accessToken!, refreshToken!)
-        router.replace("/")
+        router.replace("/events")
     } else {
         errorMessage = "system error"
         console.error("signup verification onDone", result)

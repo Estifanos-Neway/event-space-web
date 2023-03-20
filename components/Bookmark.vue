@@ -34,12 +34,12 @@ import { EventPreview } from '~~/graphql/events/event-preview.type';
 import { Icon } from '@iconify/vue';
 import { useGeneralStore, useUserStore } from '~~/pinia-stores';
 
-const generalStore = useGeneralStore()
 const props = defineProps<{
     isPreview: boolean
     event: EventPreview
 }>()
 
+const generalStore = useGeneralStore()
 const userStore = useUserStore()
 const router = useRouter()
 const thisEvent = { ...props.event }
@@ -53,7 +53,6 @@ onAddError(error => {
     thisEvent.bookmarks_count--
     generalStore.setErrorNotification("Couldn't bookmark the event, please try again!")
     console.error("onAddError:", error)
-
 })
 
 onDropDone(() => {

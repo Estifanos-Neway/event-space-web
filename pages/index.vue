@@ -17,8 +17,8 @@
                         </div>
                         <h1 class="mt-24 text-4xl font-bold tracking-tight text-gray-900 sm:mt-10 sm:text-6xl">Events you
                             don't wanna miss</h1>
-                        <p class="mt-6 text-lg leading-8 text-gray-600">Anim aute id magna aliqua ad ad non deserunt sunt.
-                            Qui irure qui lorem cupidatat commodo. Elit sunt amet fugiat veniam occaecat fugiat aliqua.</p>
+                        <p class="mt-6 text-lg leading-8 text-gray-600">Welcome to our event sharing website, where you can
+                            discover and share the latest events happening in your city and beyond!</p>
                         <div class="mt-10 flex items-center gap-x-6">
                             <NuxtLink href="/signup"
                                 class="rounded-md bg-primary px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ">
@@ -80,12 +80,14 @@
                         <div class="lg:col-end-1 lg:w-full lg:max-w-lg lg:pb-8">
                             <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">Event <span
                                     class="text-primary">Space</span>?</h2>
-                            <p class="mt-6 text-xl leading-8 ">Event space is sit molestiae et. Provident
-                                ad dolorem occaecati eos iste. Soluta rerum quidem minus ut molestiae velit error quod.
-                                Excepturi quidem expedita molestias quas.</p>
-                            <p class="mt-6 text-base leading-7">Anim aute id magna aliqua ad ad non deserunt
-                                sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet fugiat veniam occaecat fugiat.
-                                Quasi aperiam sit non sit neque reprehenderit.</p>
+                            <p class="mt-6 text-md leading-6 ">We understand the importance of connecting people with the
+                                events and experiences that matter to them, which is why we've created a platform that makes
+                                it easy to explore a wide range of activities and share them with friends, family, and
+                                fellow enthusiasts.</p>
+                            <p class="mt-6 text-md leading-6">Whether you're looking for music festivals, art exhibitions,
+                                sports games, or educational workshops, our website has something for everyone. With a
+                                user-friendly interface and comprehensive search tools, you can quickly find the events that
+                                interest you and plan your schedule accordingly.</p>
                         </div>
                         <div class=" flex flex-wrap items-start justify-end gap-6 sm:gap-8 lg:contents">
                             <div class="w-0 flex-auto lg:ml-auto lg:w-auto lg:flex-none lg:self-end">
