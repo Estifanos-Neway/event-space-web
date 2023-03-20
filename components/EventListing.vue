@@ -470,6 +470,7 @@ function refetchEvents() {
 let filtersAdded = ref(false)
 watchEffect(() => {
     if (
+        searchText.value === "" &&
         sortByLocation.value &&
         (minPrice.value === undefined || minPrice.value === "") &&
         (maxPrice.value === undefined || maxPrice.value === "") &&
@@ -483,6 +484,7 @@ watchEffect(() => {
     }
 })
 function resetFilters() {
+    searchText.value = ""
     sortByLocation.value = true
     minPrice.value = undefined
     maxPrice.value = undefined
