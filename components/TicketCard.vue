@@ -11,8 +11,10 @@
             <div class="ticket-row">
                 <span class="ticket-name-col">Event: </span>
                 <span class="ticket-detail-col">
-                    <NuxtLink v-if="ticket.event" :to="`events/${ticket.event.id}`" class="text-primary font-medium">{{
-                        ticket.event.title }}</NuxtLink>
+                    <NuxtLink v-if="ticket.event" :to="`events/${ticket.event.id}`" class="text-primary font-medium">
+                        {{ ticket.event.title.length > eventTitlePreviewLength ? ticket.event.title.substring(0,
+                            eventTitlePreviewLength) + `...` : ticket.event.title }}
+                    </NuxtLink>
                     <span v-else>This event is not available!</span>
                 </span>
             </div>
@@ -45,6 +47,7 @@
 import { createStaticServerLink, getFullFormattedDate } from '~~/commons/functions';
 import { Ticket } from '~~/graphql/tickets/ticket.type';
 
+const eventTitlePreviewLength = 55
 const props = defineProps<
     {
         ticket: Ticket
@@ -52,11 +55,14 @@ const props = defineProps<
 >()
 
 const oneDay = 86400000
-let eventDate = new Date(props.ticket.event.date).getTime()
-eventDate -= eventDate % oneDay
-let today = Date.now()
-today = today - today % oneDay
-const daysLeft = (eventDate - today) / oneDay
+let daysLeft: number
+if (props.ticket.event) {
+    let eventDate = new Date(props.ticket.event.date).getTime()
+    eventDate -= eventDate % oneDay
+    let today = Date.now()
+    today = today - today % oneDay
+    daysLeft = (eventDate - today) / oneDay
+}
 </script>
 
 <style>
