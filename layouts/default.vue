@@ -58,14 +58,14 @@
                                     </li>
                                 </div>
                                 <div class="flex justify-between gap-10 w-full md:max-w-[300px]">
-                                    <li class="btn p-0">
-                                        <NuxtLink to="/signin" data-collapse-toggle="navbar-solid-bg"
-                                            aria-controls="navbar-solid-bg" aria-expanded="false">Sign In</NuxtLink>
-                                    </li>
-                                    <li class="btn p-0 bg-primary text-on-primary">
-                                        <NuxtLink to="/signup" data-collapse-toggle="navbar-solid-bg"
-                                            aria-controls="navbar-solid-bg" aria-expanded="false">Sign Up</NuxtLink>
-                                    </li>
+                                    <NuxtLink to="/signin" data-collapse-toggle="navbar-solid-bg"
+                                        aria-controls="navbar-solid-bg" aria-expanded="false" class="btn p-0">Sign In
+                                    </NuxtLink>
+                                    <NuxtLink to="/signup" data-collapse-toggle="navbar-solid-bg"
+                                        aria-controls="navbar-solid-bg" aria-expanded="false"
+                                        class="btn p-0 bg-primary text-on-primary">
+                                        Sign Up
+                                    </NuxtLink>
                                 </div>
                             </ul>
                         </div>

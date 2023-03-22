@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="isPreview" class="flex gap-2 items-center" :class="{ 'animate-pulse': adding || dropping }">
+        <div v-if="isPreview" class="flex gap-0 items-center" :class="{ 'animate-pulse': adding || dropping }">
             <div class="text-3xl" @click.stop="toggleBookmark">
                 <span v-if="thisEvent.bookmarked_by_user">
                     <Icon icon="material-symbols:bookmark-rounded" />
@@ -9,7 +9,7 @@
                     <Icon icon="material-symbols:bookmark-outline-rounded" />
                 </span>
             </div>
-            <span class="text-2xl">{{ thisEvent.bookmarks_count }}</span>
+            <span class="text-2xl w-5 text-end ">{{ thisEvent.bookmarks_count }}</span>
         </div>
         <div v-else :class="{ 'animate-pulse': adding || dropping }" class="w-full">
             <p><span class="font-bold">{{ thisEvent.bookmarks_count }}</span> Bookmarks</p>

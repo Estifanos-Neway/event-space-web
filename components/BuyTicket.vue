@@ -20,7 +20,7 @@
                                 leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
                                 <DialogPanel
                                     class="relative text-on-background max-w-[400px] transform overflow-hidden rounded-lg bg-surface p-6 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
-                                    <div v-if="!ticketAdded" class="flex flex-col text-center text-md p-4">
+                                    <div v-if="ticketAdded" class="flex flex-col text-center text-md p-4">
                                         <span class="font-bold text-3xl text-primary">Congratulations!</span>
                                         <span>You have successfully bought a ticket!</span>
                                         <span>The Tickets QR Code has been sent to your email.</span>

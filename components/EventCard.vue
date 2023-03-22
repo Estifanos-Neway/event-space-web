@@ -38,7 +38,7 @@
                 </div>
                 <div v-if="(new Date(event.date) - new Date()) < 0" class="text-center border-t border-primary pt-2">
                     <!-- 86400000 is one day in milliseconds -->
-                    This event happened {{ datesPassed }} day<span v-if="datesPassed !== 1">s</span> ago!
+                    This event happened {{ daysPassed }} day<span v-if="daysPassed !== 1">s</span> ago!
                 </div>
                 <BuyTicket v-else-if="event.price" :event="event" />
                 <div v-else class="text-center border-t border-primary pt-2">
@@ -62,6 +62,5 @@ const props = defineProps<{
     dropEvent: () => void
 }>()
 const description = props.event.description ?? ""
-
-const datesPassed = ref(-Math.floor((new Date(props.event.date) - new Date()) / (86400000)))
+const daysPassed = ref(-Math.floor((new Date(props.event.date) - new Date()) / (86400000)))
 </script>

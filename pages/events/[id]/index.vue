@@ -18,7 +18,9 @@
                                 <p>{{ result.eventsByPk.description ?? "" }}</p>
                                 <span class="text-primary">
                                     <span v-for="tag in result.eventsByPk.tags" class="mr-3">
-                                        <span class="font-bold">#</span>{{ tag }}
+                                        <NuxtLink :to="`/events?search=${tag}`">
+                                            <span class="font-bold">#</span>{{ tag }}
+                                        </NuxtLink>
                                     </span>
                                 </span>
                             </div>

@@ -181,6 +181,18 @@
                                 will appear
                                 here
                             </span>
+                            <span>
+                                <NuxtLink v-if="listKind === 'my'" to="/events/create"
+                                    class="text-primary font-bold flex items-center  gap-1">
+                                    Create An Event
+                                    <Icon icon="material-symbols:arrow-right-alt-rounded" />
+                                </NuxtLink>
+                                <NuxtLink v-if="listKind === 'saved'" to="/events"
+                                    class="text-primary font-bold flex items-center  gap-1">
+                                    See All Events
+                                    <Icon icon="material-symbols:arrow-right-alt-rounded" />
+                                </NuxtLink>
+                            </span>
                         </div>
                     </div>
                     <div class="flex justify-center" :class="{ invisible: !loading || (events.length === 0) }">
@@ -211,6 +223,8 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { ChevronDownIcon } from '@heroicons/vue/20/solid'
 
 type listKindType = "all" | "my" | "saved" | "search" | "location"
+
+const route = useRoute()
 const filterStore = useFilterStore()
 const userStore = useUserStore()
 const props = defineProps<
@@ -275,7 +289,7 @@ let getEvents: (result: any) => Array<EventPreview>
 let updateQuery: (previousResult: any, fetchMoreResult: any) => {}
 
 // search
-const searchText = ref(filterStore.searchText)
+const searchText = ref(route.query.search?.toString() ?? filterStore.searchText)
 watchEffect(() => {
     queryVars.search = `%${searchText.value}%`
     filterStore.searchText = searchText.value
