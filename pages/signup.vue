@@ -83,7 +83,7 @@
                 <p class="text-primary font-medium">{{ email }}</p>
             </div>
         </div>
-        <Footer />
+        <Footer></Footer>
     </div>
 </template>
 <script setup lang="ts">

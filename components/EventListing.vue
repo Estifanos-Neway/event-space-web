@@ -205,7 +205,7 @@
                     </div>
                 </div>
             </div>
-            <Footer />
+            <Footer></Footer>
         </div>
     </div>
 </template>
@@ -311,9 +311,9 @@ watch(sortByLocation, () => {
     }
 })
 
-const sortBy = ref(filterStore.orderBy)
+const sortBy = ref<string>(filterStore.orderBy)
 watch(sortBy, (newValue) => {
-    if (newValue != "none") {
+    if (newValue !== "none") {
         sortByLocation.value = false
     }
     // @ts-ignore

@@ -28,7 +28,7 @@
 
                 <div class="flex flex-col gap-2">
                     <label for="tags" class="field-label">
-                        Tags <span class="text-sm">(put space between each tag)</span>
+                        Tags <span class="font-normal">(put space between each tag)</span>
                     </label>
                     <div class="flex gap-3">
                         <div v-for="tag, index in tags" :key="tag + index" id="toast-default"
@@ -51,8 +51,9 @@
                     <div class="error-message"></div>
                 </div>
                 <div class="flex flex-col gap-2">
-                    <label for="images" class="field-label">Images (Star an image to set it as
-                        thumbnail)</label>
+                    <label for="images" class="field-label">
+                        Images <span class="font-normal">(Star an image to set it as thumbnail)
+                    </span></label>
                     <div class="grid grid-cols-3 gap-6">
                         <EventImagePreview v-for="image, index in selectedImages" :imagesArray="selectedImages"
                             :index="index" :key="image.id" />
@@ -153,8 +154,8 @@
                     </div>
                 </div>
                 <div class="flex flex-col gap-2">
-                    <label for="title">
-                        Price
+                    <label for="title" class="field-label">
+                        Price <span class="font-normal">(leave empty to make it free)</span>
                     </label>
                     <Field name="price" type="number" class="text-field" />
                     <div class="error-message">

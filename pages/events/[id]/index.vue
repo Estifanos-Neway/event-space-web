@@ -42,10 +42,11 @@
                             <div class="w-full">
                                 <h3 class="font-bold"> {{ result.eventsByPk.price ? `${result.eventsByPk.price} ETB` :
                                     "FREE" }}</h3>
-                                <div v-if="(new Date(result.eventsByPk.date) - new Date()) < 0"
+                                <div v-if="(new Date(result.eventsByPk.date).getTime() - new Date().getTime()) < 0"
                                     class="text-center border-t border-primary pt-2">
                                     <!-- 86400000 is one day in milliseconds -->
-                                    This event happened {{ -Math.floor((new Date(result.eventsByPk.date) - new Date()) /
+                                    This event happened {{ -Math.floor((new Date(result.eventsByPk.date).getTime() - new
+                                        Date().getTime()) /
                                         (86400000)) }} days
                                     ago!
                                 </div>
@@ -113,8 +114,7 @@
                                             <DialogPanel
                                                 class="relative transform overflow-hidden  p-4 transition-all h-screen">
                                                 <div class="flex justify-center items-center h-full">
-                                                    <img :src="showingImageUrl"
-                                                        class="w-[90%] h-[90%] object-contain" />
+                                                    <img :src="showingImageUrl" class="w-[90%] h-[90%] object-contain" />
                                                 </div>
                                             </DialogPanel>
                                         </TransitionChild>
@@ -156,10 +156,11 @@
                     <div class="w-full">
                         <h3 class="font-bold"> {{ result.eventsByPk.price ? `${result.eventsByPk.price} ETB` : "FREE" }}
                         </h3>
-                        <div v-if="(new Date(result.eventsByPk.date) - new Date()) < 0"
+                        <div v-if="(new Date(result.eventsByPk.date).getTime() - new Date().getTime()) < 0"
                             class="text-center border-t border-primary pt-2">
                             <!-- 86400000 is one day in milliseconds -->
-                            This event happened {{ -Math.floor((new Date(result.eventsByPk.date) - new Date()) /
+                            This event happened {{ -Math.floor((new Date(result.eventsByPk.date).getTime() - new
+                                Date().getTime()) /
                                 (86400000)) }} days
                             ago!
                         </div>
@@ -202,7 +203,7 @@
                 <Loading message="Loading event details..." />
             </div>
         </div>
-        <Footer />
+        <Footer></Footer>
 
         <!-- Delete confirmation pop -->
         <TransitionRoot :show="isDeleteConfirmPopupOpen">

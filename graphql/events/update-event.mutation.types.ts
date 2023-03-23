@@ -4,7 +4,7 @@ export type UpdateEventMutationVars = {
     description?: string
     images?: Array<string>
     tags?: Array<string>
-    date?: Date
+    date?: Date | string
     price?: number
     cityId?: string
     location?: Array<number>

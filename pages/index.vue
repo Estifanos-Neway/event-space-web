@@ -23,8 +23,12 @@
                             <NuxtLink href="/signup"
                                 class="rounded-md bg-primary px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ">
                                 Register Now</NuxtLink>
-                            <NuxtLink href="/events" class="text-sm font-semibold leading-6 text-gray-900">Explore events
-                                <span aria-hidden="true">→</span>
+                            <NuxtLink href="/events"
+                                class="text-sm font-semibold leading-6 text-gray-900 flex items-center  gap-1">
+                                Explore events
+                                <span>
+                                    <Icon icon="material-symbols:arrow-right-alt-rounded" />
+                                </span>
                             </NuxtLink>
                         </div>
                     </div>
@@ -120,9 +124,12 @@
                                 <NuxtLink href="/signup"
                                     class="rounded-md bg-primary px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ">
                                     Register Now</NuxtLink>
-                                <NuxtLink href="/events" class="text-sm font-semibold leading-6 text-gray-900">Explore
-                                    events
-                                    <span aria-hidden="true">→</span>
+                                <NuxtLink href="/events"
+                                    class="text-sm font-semibold leading-6 text-gray-900 flex items-center  gap-1">
+                                    Explore events
+                                    <span>
+                                        <Icon icon="material-symbols:arrow-right-alt-rounded" />
+                                    </span>
                                 </NuxtLink>
                             </div>
                         </div>
@@ -131,7 +138,7 @@
             </div>
         </div>
         <div class="w-[85%]">
-            <Footer />
+            <Footer></Footer>
         </div>
     </div>
     <!-- src="https://panda-events.com/wp-content/uploads/2018/06/events-panda.jpg" -->

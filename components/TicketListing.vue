@@ -20,7 +20,8 @@
                         </span>
                         <span>
                             <NuxtLink to="/events" class="text-primary font-bold flex items-center  gap-1">
-                                Explore Events <span>
+                                Explore Events
+                                <span>
                                     <Icon icon="material-symbols:arrow-right-alt-rounded" />
                                 </span>
                             </NuxtLink>
@@ -39,7 +40,7 @@
                 </div>
             </div>
         </div>
-        <Footer />
+        <Footer></Footer>
     </div>
 </template>
 
