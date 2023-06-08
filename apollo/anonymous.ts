@@ -1,6 +1,6 @@
 import { defineApolloClient } from '@nuxtjs/apollo'
 
 export default defineApolloClient({
-    httpEndpoint: 'http://localhost:8000/v1/graphql',
+    httpEndpoint: 'https://ruling-krill-83.hasura.app/v1/graphql',
     connectToDevTools: false
 })
